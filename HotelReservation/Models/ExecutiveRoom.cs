@@ -9,13 +9,21 @@ namespace HotelReservation.Models
 {
     public class ExecutiveRoom : BaseNotifier, IExecutiveRoom
     {
-        public int RoomNumber { get => RoomNumber; set { RoomNumber = value; Notifica(nameof(RoomNumber)); } }
-        public int Beds { get => Beds; set { Beds = value; Notifica(nameof(Beds)); } }
-        public int Size { get => Size; set { Size = value; Notifica(nameof(Size)); } }
-        public bool AirConditioning { get => AirConditioning; set { AirConditioning = value; Notifica(nameof(AirConditioning)); } }
-        public bool Television { get => Television; set { Television = value; Notifica(nameof(Television)); } }
-        public bool MiniFridge { get => MiniFridge; set { MiniFridge = value; Notifica(nameof(MiniFridge)); } }
-        public bool Jacuzzi { get => Jacuzzi; set { Jacuzzi = value; Notifica(nameof(Jacuzzi)); } }
+        private int _roomNumber { get; set; }
+        private int _beds { get; set; }
+        private int _size { get; set; }
+        private bool _airConditioning { get; set; }
+        private bool _television { get; set; }
+        private bool _miniFridge { get; set; }
+        private bool _jacuzzi { get; set; }
+
+        public int RoomNumber { get => _roomNumber; set { _roomNumber = value; Notifica(nameof(RoomNumber)); } }
+        public int Beds { get => _beds; set { _beds = value; Notifica(nameof(Beds)); } }
+        public int Size { get => _size; set { _size = value; Notifica(nameof(Size)); } }
+        public bool AirConditioning { get => _airConditioning; set { _airConditioning = value; Notifica(nameof(AirConditioning)); } }
+        public bool Television { get => _television; set { _television = value; Notifica(nameof(Television)); } }
+        public bool MiniFridge { get => _miniFridge; set { _miniFridge = value; Notifica(nameof(MiniFridge)); } }
+        public bool Jacuzzi { get => _jacuzzi; set { _jacuzzi = value; Notifica(nameof(Jacuzzi)); } }
 
         public ExecutiveRoom() { }
 

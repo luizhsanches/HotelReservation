@@ -5,8 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HotelReservation.Views"
         mc:Ignorable="d"
-        Title="StandardView" Height="450" Width="800">
+        Title="StandardView" Height="300" Width="550">
     <Grid>
-        
+        <Label Content="Standard Room" HorizontalAlignment="Left" Margin="30,10,0,0" VerticalAlignment="Top" Width="162" FontSize="20"/>
+        <Label Content="Room Number" HorizontalAlignment="Left" Margin="30,70,0,0" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" Margin="30,96,0,0" TextWrapping="Wrap" Text="{Binding RoomNumber}" VerticalAlignment="Top" Width="120"/>
+        <Label Content="Beds" HorizontalAlignment="Left" Margin="188,70,0,0" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" Margin="188,96,0,0" TextWrapping="Wrap" Text="{Binding Beds}" VerticalAlignment="Top" Width="120"/>
+        <Label Content="Size" HorizontalAlignment="Left" Margin="340,70,0,0" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" Margin="340,96,0,0" TextWrapping="Wrap" Text="{Binding Size}" VerticalAlignment="Top" Width="120"/>
+        <CheckBox Content="Air Conditioning" IsChecked="{Binding AirConditioning}" HorizontalAlignment="Left" Margin="100,161,0,0" VerticalAlignment="Top"/>
+        <CheckBox Content="Television" IsChecked="{Binding Television}" HorizontalAlignment="Left" Margin="223,161,0,0" VerticalAlignment="Top"/>
+        <CheckBox Content="Mini Fridge" IsChecked="{Binding MiniFridge}" HorizontalAlignment="Left" Margin="323,161,0,0" VerticalAlignment="Top"/>
+        <Button Content="Submit" Click="btnSubmitStd" HorizontalAlignment="Center" Margin="0,215,0,0" VerticalAlignment="Top" Width="102" Height="28"/>
+
     </Grid>
 </Window>

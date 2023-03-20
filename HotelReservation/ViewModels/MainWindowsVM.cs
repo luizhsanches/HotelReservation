@@ -47,6 +47,7 @@ namespace HotelReservation.ViewModels
         public MainWindowsVM()
         {
             reservationList = new ObservableCollection<Reservation>();
+            roomList = new ObservableCollection<IRoomType>();
             RoomTypeItem = (int)RoomTypeEnum.All;
             //BuildRoomList();
             InitializeCommands();
@@ -63,20 +64,9 @@ namespace HotelReservation.ViewModels
                 bool? verifica = screen.ShowDialog();
                 if (verifica.HasValue && verifica.Value)
                 {
+                    roomList.Add(room);
                     MessageBox.Show("Ok");
                 }
-
-                /*IRoom newRoom = new Room();
-                RoomView screen = new RoomView();
-                screen.DataContext = newRoom;
-                bool? verifica = screen.ShowDialog();
-
-                if (verifica.HasValue && verifica.Value)
-                {
-                    roomList.Add(newRoom);
-                    MessageBox.Show("Ok");
-                }*/
-
             });
 
             AddReservation = new RelayCommand((object _) =>
