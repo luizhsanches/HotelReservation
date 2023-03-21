@@ -14,15 +14,18 @@ namespace HotelReservation.ViewModels
 {
     public class MainWindowsVM : BaseNotifier
     {
-        private ObservableCollection<IRoomType> roomList;
+        private ObservableCollection<IRoom> roomList;
         private ObservableCollection<Reservation> reservationList;
         private int roomTypeItem;
+        private IRoom selectedRoom;
+        private Reservation selectedReservation;
 
-        public IEnumerable<Reservation> ReservationList {
+        public ObservableCollection<Reservation> ReservationList
+        {
             get { return reservationList; }
         }
 
-        public ObservableCollection<IRoomType> RoomList
+        public ObservableCollection<IRoom> RoomList
         {
             get { return roomList; }
         }
@@ -37,6 +40,32 @@ namespace HotelReservation.ViewModels
             }
         }
 
+        public IRoom SelectedRoom
+        {
+            get { return selectedRoom; }
+            set
+            {
+                if (selectedRoom != value)
+                {
+                    selectedRoom = value;
+                    Notifica(nameof(SelectedRoom));
+                }
+            }
+        }
+
+        public Reservation SelectedReservation
+        {
+            get { return selectedReservation; }
+            set
+            {
+                if (selectedReservation != value)
+                {
+                    selectedReservation = value;
+                    Notifica(nameof(SelectedReservation));
+                }
+            }
+        }
+
         public ICommand AddRoom { get; private set; }
         public ICommand EditRoom { get; private set; }
         public ICommand RemoveRoom { get; private set; }
@@ -47,25 +76,73 @@ namespace HotelReservation.ViewModels
         public MainWindowsVM()
         {
             reservationList = new ObservableCollection<Reservation>();
-            roomList = new ObservableCollection<IRoomType>();
+            roomList = new ObservableCollection<IRoom>();
             RoomTypeItem = (int)RoomTypeEnum.All;
-            //BuildRoomList();
             InitializeCommands();
         }
 
         public void InitializeCommands()
         {
             AddRoom = new RelayCommand((object _) =>
-            { 
-                IRoomType room = Room.selectRoomType(roomTypeItem);
-                Window screen = Room.selectRoomWindow(roomTypeItem);
+            {
+                IRoom room = Room.selectRoomType(RoomTypeItem);
+                Window screen = Room.selectRoomWindow(RoomTypeItem);
 
                 screen.DataContext = room;
                 bool? verifica = screen.ShowDialog();
+
                 if (verifica.HasValue && verifica.Value)
                 {
+                    //insert db
                     roomList.Add(room);
                     MessageBox.Show("Ok");
+                }
+
+            }, (object _) => RoomTypeItem != (int)RoomTypeEnum.All);
+
+            EditRoom = new RelayCommand((object _) =>
+            {
+                try
+                {
+                    if (SelectedRoom != null)
+                    {
+                        IRoom room = SelectedRoom.Clone();
+                        Window screen = Room.selectRoomWindow(RoomTypeItem);
+
+                        screen.DataContext = room;
+                        bool? verifica = screen.ShowDialog();
+
+                        if (verifica.HasValue && verifica.Value)
+                        {
+                            //update db
+                            SelectedRoom.CopyRoom(room);
+
+                            MessageBox.Show("Ok");
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("A room should be selected in the listview.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+
+            }, (object _) => RoomTypeItem != (int)RoomTypeEnum.All);
+
+            RemoveRoom = new RelayCommand((object _) =>
+            {
+                try
+                {
+                    //delete db
+                    roomList.Remove(SelectedRoom);
+                    RoomTypeItem = (int)RoomTypeEnum.All;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
                 }
             });
 
@@ -76,37 +153,64 @@ namespace HotelReservation.ViewModels
                 ReservationView screen = new ReservationView();
                 screen.DataContext = newReservation;
                 screen.cbRooms.ItemsSource = roomList;
+                screen.cbRooms.DisplayMemberPath = "RoomNumber";
                 bool? verifica = screen.ShowDialog();
 
                 if (verifica.HasValue && verifica.Value)
                 {
+                    //insert db
                     string text = screen.cbRooms.Text;
-                    //Room room = roomList.FirstOrDefault(r => r.RoomNumber.ToString() == text);
-                    //newReservation.Room = room;
+                    IRoom room = roomList.FirstOrDefault(r => r.RoomNumber.ToString() == text);
+                    newReservation.Room = room;
                     reservationList.Add(newReservation);
                 }
             });
 
-        }
-
-        /*public void BuildRoomList()
-        {
-            roomList = new ObservableCollection<IRoom>();
-            for (int i = 1; i < 11; i++)
+            EditReservation = new RelayCommand((object _) =>
             {
-                if (i <= 4)
+                try
                 {
-                    roomList.Add(new Room(i, RoomTypeEnum.Executive));
+                    if (SelectedReservation != null)
+                    {
+                        Reservation reservationToUpdate = SelectedReservation.Clone();
+                        ReservationView screen = new ReservationView();
+                        screen.DataContext = reservationToUpdate;
+                        screen.cbRooms.ItemsSource = roomList;
+                        screen.cbRooms.DisplayMemberPath = "RoomNumber";
+                        screen.cbRooms.SelectedValue = reservationToUpdate.Room.RoomNumber.ToString();
+                        bool? verifica = screen.ShowDialog();
+
+                        if (verifica.HasValue && verifica.Value)
+                        {
+                            //update db
+                            SelectedReservation.CopyReservation(reservationToUpdate);
+                            Notifica(nameof(ReservationList)); //don't update-must check
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("A reservation should be selected in the listview.");
+                    }
                 }
-                else if (i > 4 && i <= 7)
+                catch (Exception ex)
                 {
-                    roomList.Add(new Room(i, RoomTypeEnum.Deluxe));
+                    MessageBox.Show(ex.Message);
                 }
-                else
+            });
+
+            RemoveReservation = new RelayCommand((object _) =>
+            {
+                try
                 {
-                    roomList.Add(new Room(i, RoomTypeEnum.Presidential));
+                    //delete db
+                    reservationList.Remove(SelectedReservation);
                 }
-            }
-        }*/
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            });
+
+        }
     }
 }

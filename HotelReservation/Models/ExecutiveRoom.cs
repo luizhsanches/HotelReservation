@@ -38,12 +38,12 @@ namespace HotelReservation.Models
             Jacuzzi = jacuzzi;
         }
 
-        public IRoomType Clone()
+        public IRoom Clone()
         {
             return (ExecutiveRoom)this.MemberwiseClone();
         }
 
-        public void CopyRoom(IRoomType newRoom)
+        public void CopyRoom(IRoom newRoom)
         {
             ExecutiveRoom newExecutive = (ExecutiveRoom)newRoom;
             RoomNumber = newExecutive.RoomNumber;

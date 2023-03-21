@@ -41,12 +41,12 @@ namespace HotelReservation.Models
             Wifi = wifi;
         }
 
-        public IRoomType Clone()
+        public IRoom Clone()
         {
             return (DeluxeRoom)this.MemberwiseClone();
         }
 
-        public void CopyRoom(IRoomType newRoom)
+        public void CopyRoom(IRoom newRoom)
         {
             DeluxeRoom deluxeRoom = (DeluxeRoom)newRoom;
             RoomNumber = deluxeRoom.RoomNumber;

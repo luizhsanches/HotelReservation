@@ -35,12 +35,12 @@ namespace HotelReservation.Models
             MiniFridge = miniFridge;
         }
 
-        public IRoomType Clone()
+        public IRoom Clone()
         {
             return (StandardRoom) this.MemberwiseClone();
         }
 
-        public void CopyRoom(IRoomType newRoom)
+        public void CopyRoom(IRoom newRoom)
         {
             StandardRoom newStandard = (StandardRoom)newRoom;
             RoomNumber = newStandard.RoomNumber;

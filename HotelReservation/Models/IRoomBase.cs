@@ -6,23 +6,23 @@ using System.Threading.Tasks;
 
 namespace HotelReservation.Models
 {
-    public interface IRoomType
+    public interface IRoom
     {
         int RoomNumber { get; set; }
         int Beds { get; set; }
         int Size { get; set; }
-        IRoomType Clone();
-        void CopyRoom(IRoomType newRoom);
+        IRoom Clone();
+        void CopyRoom(IRoom newRoom);
     }
 
-    public interface IStandardRoom : IRoomType
+    public interface IStandardRoom : IRoom
     {
         bool AirConditioning { get; set; }
         bool Television { get; set; }
         bool MiniFridge { get; set; }
     }
 
-    public interface IExecutiveRoom : IRoomType
+    public interface IExecutiveRoom : IRoom
     {
         bool AirConditioning { get; set; }
         bool Television { get; set; }
@@ -30,7 +30,7 @@ namespace HotelReservation.Models
         bool Jacuzzi { get; set; }
     }
 
-    public interface IDeluxeRoom : IRoomType
+    public interface IDeluxeRoom : IRoom
     {
         bool AirConditioning { get; set; }
         bool Television { get; set; }

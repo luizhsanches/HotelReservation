@@ -15,8 +15,8 @@ namespace HotelReservation.Models
             set { id = value; }
         }
 
-        private IRoomType room;
-        public IRoomType Room
+        private IRoom room;
+        public IRoom Room
         {
             get { return room; }
             set { room = value; }
@@ -47,13 +47,26 @@ namespace HotelReservation.Models
 
         public Reservation() { }
 
-        public Reservation(int id, IRoomType room, string username, DateTime startDate, DateTime endDate)
+        public Reservation(int id, IRoom room, string username, DateTime startDate, DateTime endDate)
         {
             Id = id;
             Room = room;
             Username = username;
             StartDate = startDate;
             EndDate = endDate;
+        }
+
+        public Reservation Clone()
+        {
+            return (Reservation)MemberwiseClone();
+        }
+
+        public void CopyReservation(Reservation reservation)
+        {
+            Room = reservation.Room;
+            Username = reservation.Username;
+            StartDate = reservation.StartDate;
+            EndDate = reservation.EndDate;
         }
     }
 }

@@ -11,7 +11,7 @@ namespace HotelReservation.Models
 {
     public static class Room
     {
-        public static IRoomType selectRoomType(int roomTypeItem)
+        public static IRoom selectRoomType(int roomTypeItem)
         {
             if (roomTypeItem == (int)RoomTypeEnum.Standard)
             {
