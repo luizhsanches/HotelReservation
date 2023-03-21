@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 
 namespace HotelReservation.Models
 {
-    public class StandardRoom : BaseNotifier, IStandardRoom
+    public class StandardRoom : BaseNotifier, IRoom
     {
         private int _roomNumber { get; set; }
+        private RoomTypeEnum _roomType { get; set; }
         private int _beds { get; set; }
         private int _size { get; set; }
         private bool _airConditioning { get; set; }
@@ -17,6 +18,7 @@ namespace HotelReservation.Models
         private bool _miniFridge { get; set; }
 
         public int RoomNumber { get => _roomNumber; set { _roomNumber = value; Notifica(nameof(RoomNumber)); } }
+        public RoomTypeEnum RoomType { get => _roomType; set { _roomType = value; Notifica(nameof(RoomType)); } }
         public int Beds { get => _beds; set { _beds = value; Notifica(nameof(Beds)); } }
         public int Size { get => _size; set { _size = value; Notifica(nameof(Size)); } }
         public bool AirConditioning { get => _airConditioning; set { _airConditioning = value; Notifica(nameof(AirConditioning)); } }
@@ -25,9 +27,10 @@ namespace HotelReservation.Models
 
         public StandardRoom() { }
 
-        public StandardRoom(int roomNumber, int beds, int size, bool airConditioning, bool television, bool miniFridge)
+        public StandardRoom(int roomNumber, RoomTypeEnum roomType, int beds, int size, bool airConditioning, bool television, bool miniFridge)
         {
             RoomNumber = roomNumber;
+            RoomType = roomType;
             Beds = beds;
             Size = size;
             AirConditioning = airConditioning;
@@ -44,6 +47,7 @@ namespace HotelReservation.Models
         {
             StandardRoom newStandard = (StandardRoom)newRoom;
             RoomNumber = newStandard.RoomNumber;
+            RoomType = newStandard.RoomType;
             Beds = newStandard.Beds;
             Size = newStandard.Size;
             AirConditioning = newStandard.AirConditioning;

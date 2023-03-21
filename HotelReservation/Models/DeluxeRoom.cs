@@ -10,6 +10,7 @@ namespace HotelReservation.Models
     public class DeluxeRoom : BaseNotifier, IDeluxeRoom
     {
         private int _roomNumber { get; set; }
+        private RoomTypeEnum _roomType { get; set; }
         private int _beds { get; set; }
         private int _size { get; set; }
         private bool _airConditioning { get; set; }
@@ -19,6 +20,7 @@ namespace HotelReservation.Models
         private bool _wifi { get; set; }
 
         public int RoomNumber { get => _roomNumber; set { _roomNumber = value; Notifica(nameof(RoomNumber)); } }
+        public RoomTypeEnum RoomType { get => _roomType; set { _roomType = value; Notifica(nameof(RoomType)); } }
         public int Beds { get => _beds; set { _beds = value; Notifica(nameof(Beds)); } }
         public int Size { get => _size; set { _size = value; Notifica(nameof(Size)); } }
         public bool AirConditioning { get => _airConditioning; set { _airConditioning = value; Notifica(nameof(AirConditioning)); } }
@@ -29,9 +31,10 @@ namespace HotelReservation.Models
 
         public DeluxeRoom() { }
 
-        public DeluxeRoom(int roomNumber, int beds, int size, bool airConditioning, bool television, bool miniFridge, bool jacuzzi, bool wifi)
+        public DeluxeRoom(int roomNumber, RoomTypeEnum roomType, int beds, int size, bool airConditioning, bool television, bool miniFridge, bool jacuzzi, bool wifi)
         {
             RoomNumber = roomNumber;
+            RoomType = roomType;
             Beds = beds;
             Size = size;
             AirConditioning = airConditioning;
@@ -48,15 +51,16 @@ namespace HotelReservation.Models
 
         public void CopyRoom(IRoom newRoom)
         {
-            DeluxeRoom deluxeRoom = (DeluxeRoom)newRoom;
-            RoomNumber = deluxeRoom.RoomNumber;
-            Beds = deluxeRoom.Beds;
-            Size = deluxeRoom.Size;
-            AirConditioning = deluxeRoom.AirConditioning;
-            Television = deluxeRoom.Television;
-            MiniFridge = deluxeRoom.MiniFridge;
-            Jacuzzi = deluxeRoom.Jacuzzi;
-            Wifi = deluxeRoom.Wifi;
+            DeluxeRoom newDeluxe = (DeluxeRoom)newRoom;
+            RoomNumber = newDeluxe.RoomNumber;
+            RoomType = newDeluxe.RoomType;
+            Beds = newDeluxe.Beds;
+            Size = newDeluxe.Size;
+            AirConditioning = newDeluxe.AirConditioning;
+            Television = newDeluxe.Television;
+            MiniFridge = newDeluxe.MiniFridge;
+            Jacuzzi = newDeluxe.Jacuzzi;
+            Wifi = newDeluxe.Wifi;
         }
     }
 }

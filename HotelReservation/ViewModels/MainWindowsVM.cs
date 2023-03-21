@@ -1,4 +1,5 @@
 ﻿using HotelReservation.Models;
+using HotelReservation.Models.DatabaseContext;
 using HotelReservation.ViewModels.VmUtils;
 using HotelReservation.Views;
 using System;
@@ -14,6 +15,7 @@ namespace HotelReservation.ViewModels
 {
     public class MainWindowsVM : BaseNotifier
     {
+        private readonly IDbContext database;
         private ObservableCollection<IRoom> roomList;
         private ObservableCollection<Reservation> reservationList;
         private int roomTypeItem;
@@ -75,9 +77,18 @@ namespace HotelReservation.ViewModels
 
         public MainWindowsVM()
         {
-            reservationList = new ObservableCollection<Reservation>();
-            roomList = new ObservableCollection<IRoom>();
-            RoomTypeItem = (int)RoomTypeEnum.All;
+            database = new PostgresDB();
+            try
+            {
+                roomList = database.GetRooms();
+                reservationList = new ObservableCollection<Reservation>();
+                RoomTypeItem = (int)RoomTypeEnum.All;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            
             InitializeCommands();
         }
 
@@ -87,15 +98,31 @@ namespace HotelReservation.ViewModels
             {
                 IRoom room = Room.selectRoomType(RoomTypeItem);
                 Window screen = Room.selectRoomWindow(RoomTypeItem);
-
+                Enum roomTypeEnum = Room.selectRoomTypeEnum(RoomTypeItem);
+                
                 screen.DataContext = room;
                 bool? verifica = screen.ShowDialog();
 
                 if (verifica.HasValue && verifica.Value)
                 {
-                    //insert db
-                    roomList.Add(room);
-                    MessageBox.Show("Ok");
+                    try
+                    {
+                        room.RoomType = (RoomTypeEnum)roomTypeEnum;
+                        int res = database.InsertRoom(room);
+                        if (res == 1)
+                        {
+                            roomList.Add(room);
+                            MessageBox.Show("Room added successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
+                        else
+                        {
+                            throw new Exception("An error ocurred");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
 
             }, (object _) => RoomTypeItem != (int)RoomTypeEnum.All);
@@ -108,16 +135,26 @@ namespace HotelReservation.ViewModels
                     {
                         IRoom room = SelectedRoom.Clone();
                         Window screen = Room.selectRoomWindow(RoomTypeItem);
+                        Enum roomTypeEnum = Room.selectRoomTypeEnum(RoomTypeItem);
 
                         screen.DataContext = room;
                         bool? verifica = screen.ShowDialog();
 
                         if (verifica.HasValue && verifica.Value)
                         {
-                            //update db
-                            SelectedRoom.CopyRoom(room);
+                            room.RoomType = (RoomTypeEnum)roomTypeEnum;
+                            int res = database.UpdateRoom(room);
+                            if (res == 1)
+                            {
+                                SelectedRoom.CopyRoom(room);
+                                Notifica(nameof(RoomList));
 
-                            MessageBox.Show("Ok");
+                                MessageBox.Show("Room updated successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                            }
+                            else
+                            {
+                                throw new Exception("An error ocurred");
+                            }
                         }
                     }
                     else
@@ -127,7 +164,7 @@ namespace HotelReservation.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message);
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
 
             }, (object _) => RoomTypeItem != (int)RoomTypeEnum.All);
@@ -136,13 +173,23 @@ namespace HotelReservation.ViewModels
             {
                 try
                 {
-                    //delete db
-                    roomList.Remove(SelectedRoom);
-                    RoomTypeItem = (int)RoomTypeEnum.All;
+                    int res = database.DeleteRoom(SelectedRoom.RoomNumber);
+
+                    if (res == 1)
+                    {
+                        roomList.Remove(SelectedRoom);
+                        RoomTypeItem = (int)RoomTypeEnum.All;
+
+                        MessageBox.Show("Room deleted!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        throw new Exception("An error ocurred");
+                    }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message);
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             });
 

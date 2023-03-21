@@ -10,6 +10,7 @@ namespace HotelReservation.Models
     public class ExecutiveRoom : BaseNotifier, IExecutiveRoom
     {
         private int _roomNumber { get; set; }
+        private RoomTypeEnum _roomType { get; set; }
         private int _beds { get; set; }
         private int _size { get; set; }
         private bool _airConditioning { get; set; }
@@ -18,6 +19,7 @@ namespace HotelReservation.Models
         private bool _jacuzzi { get; set; }
 
         public int RoomNumber { get => _roomNumber; set { _roomNumber = value; Notifica(nameof(RoomNumber)); } }
+        public RoomTypeEnum RoomType { get => _roomType; set { _roomType = value; Notifica(nameof(RoomType)); } }
         public int Beds { get => _beds; set { _beds = value; Notifica(nameof(Beds)); } }
         public int Size { get => _size; set { _size = value; Notifica(nameof(Size)); } }
         public bool AirConditioning { get => _airConditioning; set { _airConditioning = value; Notifica(nameof(AirConditioning)); } }
@@ -27,9 +29,10 @@ namespace HotelReservation.Models
 
         public ExecutiveRoom() { }
 
-        public ExecutiveRoom(int roomNumber, int beds, int size, bool airConditioning, bool television, bool miniFridge, bool jacuzzi)
+        public ExecutiveRoom(int roomNumber, RoomTypeEnum roomType, int beds, int size, bool airConditioning, bool television, bool miniFridge, bool jacuzzi)
         {
             RoomNumber = roomNumber;
+            RoomType = roomType;
             Beds = beds;
             Size = size;
             AirConditioning = airConditioning;
@@ -47,6 +50,7 @@ namespace HotelReservation.Models
         {
             ExecutiveRoom newExecutive = (ExecutiveRoom)newRoom;
             RoomNumber = newExecutive.RoomNumber;
+            RoomType = newExecutive.RoomType;
             Beds = newExecutive.Beds;
             Size = newExecutive.Size;
             AirConditioning = newExecutive.AirConditioning;

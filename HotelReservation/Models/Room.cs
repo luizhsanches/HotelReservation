@@ -29,6 +29,24 @@ namespace HotelReservation.Models
             return null;
         }
 
+        public static Enum selectRoomTypeEnum(int roomTypeItem)
+        {
+            if (roomTypeItem == (int)RoomTypeEnum.Standard)
+            {
+                return RoomTypeEnum.Standard;
+            }
+            else if (roomTypeItem == (int)RoomTypeEnum.Executive)
+            {
+                return RoomTypeEnum.Executive;
+            }
+            else if (roomTypeItem == (int)RoomTypeEnum.Deluxe)
+            {
+                return RoomTypeEnum.Deluxe;
+            }
+
+            return null;
+        }
+
         public static Window selectRoomWindow(int roomTypeItem)
         {
             if (roomTypeItem == (int)RoomTypeEnum.Standard)
