@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,6 +10,7 @@ namespace HotelReservation.Models
 {
     public class StandardRoom : BaseNotifier, IRoom
     {
+        int _id { get; set; }
         private int _roomNumber { get; set; }
         private RoomTypeEnum _roomType { get; set; }
         private int _beds { get; set; }
@@ -17,6 +19,7 @@ namespace HotelReservation.Models
         private bool _television { get; set; }
         private bool _miniFridge { get; set; }
 
+        public int Id { get => _id; set { _id = value; Notifica(nameof(Id)); } }
         public int RoomNumber { get => _roomNumber; set { _roomNumber = value; Notifica(nameof(RoomNumber)); } }
         public RoomTypeEnum RoomType { get => _roomType; set { _roomType = value; Notifica(nameof(RoomType)); } }
         public int Beds { get => _beds; set { _beds = value; Notifica(nameof(Beds)); } }
@@ -27,8 +30,9 @@ namespace HotelReservation.Models
 
         public StandardRoom() { }
 
-        public StandardRoom(int roomNumber, RoomTypeEnum roomType, int beds, int size, bool airConditioning, bool television, bool miniFridge)
+        public StandardRoom(int id, int roomNumber, RoomTypeEnum roomType, int beds, int size, bool airConditioning, bool television, bool miniFridge)
         {
+            Id = id;
             RoomNumber = roomNumber;
             RoomType = roomType;
             Beds = beds;
@@ -46,6 +50,7 @@ namespace HotelReservation.Models
         public void CopyRoom(IRoom newRoom)
         {
             StandardRoom newStandard = (StandardRoom)newRoom;
+            Id = newStandard.Id;
             RoomNumber = newStandard.RoomNumber;
             RoomType = newStandard.RoomType;
             Beds = newStandard.Beds;

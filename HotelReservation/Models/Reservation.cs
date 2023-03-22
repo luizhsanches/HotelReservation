@@ -15,6 +15,13 @@ namespace HotelReservation.Models
             set { id = value; }
         }
 
+        private int roomId;
+        public int RoomId
+        {
+            get { return roomId; }
+            set { roomId = value; }
+        }
+
         private IRoom room;
         public IRoom Room
         {
@@ -43,13 +50,12 @@ namespace HotelReservation.Models
             set { endDate = value; }
         }
 
-        public TimeSpan length => EndDate.Subtract(StartDate);
-
         public Reservation() { }
 
-        public Reservation(int id, IRoom room, string username, DateTime startDate, DateTime endDate)
+        public Reservation(int id, int roomId, IRoom room, string username, DateTime startDate, DateTime endDate)
         {
             Id = id;
+            RoomId = roomId;
             Room = room;
             Username = username;
             StartDate = startDate;

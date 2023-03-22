@@ -17,14 +17,12 @@ namespace HotelReservation.Models.DatabaseContext
         {
             if (isTestDb)
             {
-                connectionString = "Server=localhost;Port=5432;Database=hotel_reservation;User Id=postgres;Password=1234;Integrated Security=true;";
+                connectionString = "Server=localhost;Port=5432;Database=hotel_reservation_test;User Id=postgres;Password=1234;Integrated Security=true;";
             }
             else
             {
                 connectionString = "Server=localhost;Port=5432;Database=hotel_reservation;User Id=postgres;Password=1234;Integrated Security=true;";
             }
-
-
         }
 
         public int ExecuteQuery(NpgsqlCommand command, params NpgsqlParameter[] parameters)
@@ -72,11 +70,12 @@ namespace HotelReservation.Models.DatabaseContext
                         NpgsqlDataReader reader = command.ExecuteReader();
                         while (reader.Read())
                         {
-                            _ = Enum.TryParse(reader.GetString(1), out RoomTypeEnum roomType);
+                            _ = Enum.TryParse(reader.GetString(2), out RoomTypeEnum roomType);
                             if (roomType == RoomTypeEnum.Standard)
                             {
                                 room = new StandardRoom
                                 {
+                                    Id = (int)reader["id"],
                                     RoomNumber = (int)reader["room_number"],
                                     RoomType = roomType,
                                     Beds = (int)reader["beds"],
@@ -90,6 +89,7 @@ namespace HotelReservation.Models.DatabaseContext
                             {
                                 room = new ExecutiveRoom
                                 {
+                                    Id = (int)reader["id"],
                                     RoomNumber = (int)reader["room_number"],
                                     RoomType = roomType,
                                     Beds = (int)reader["beds"],
@@ -104,6 +104,7 @@ namespace HotelReservation.Models.DatabaseContext
                             {
                                 room = new DeluxeRoom
                                 {
+                                    Id = (int)reader["id"],
                                     RoomNumber = (int)reader["room_number"],
                                     RoomType = roomType,
                                     Beds = (int)reader["beds"],
@@ -118,7 +119,96 @@ namespace HotelReservation.Models.DatabaseContext
 
                             rooms.Add(room);
                         }
+                        reader.Close();
                         return rooms;
+                    }
+                    catch (NpgsqlException npg)
+                    {
+                        throw new Exception("An error ocurred when accessing database: " + npg.Message);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception("Error when loading rooms: " + ex.Message);
+                    }
+                }
+            }
+        }
+
+        public IRoom GetOneRoom(int roomId)
+        {            
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
+            {
+                IRoom room;
+                string selectQuery = "SELECT * FROM rooms WHERE id = @id";
+                
+                using (NpgsqlCommand command = new NpgsqlCommand(selectQuery, conn))
+                {
+                    command.Parameters.AddWithValue("@id", roomId);
+                    try
+                    {
+                        conn.Open();
+                        command.Connection = conn;
+                        
+                        NpgsqlDataReader reader = command.ExecuteReader();
+                        if (reader.Read())
+                        {
+                            _ = Enum.TryParse(reader.GetString(2), out RoomTypeEnum roomType);
+                            if (roomType == RoomTypeEnum.Standard)
+                            {
+                                room = new StandardRoom
+                                {
+                                    Id = (int)reader["id"],
+                                    RoomNumber = (int)reader["room_number"],
+                                    RoomType = roomType,
+                                    Beds = (int)reader["beds"],
+                                    Size = (int)reader["size"],
+                                    AirConditioning = (bool)reader["air_conditioning"],
+                                    Television = (bool)reader["television"],
+                                    MiniFridge = (bool)reader["mini_fridge"]
+                                };
+                                return room;
+                            }
+                            else if (roomType == RoomTypeEnum.Executive)
+                            {
+                                room = new ExecutiveRoom
+                                {
+                                    Id = (int)reader["id"],
+                                    RoomNumber = (int)reader["room_number"],
+                                    RoomType = roomType,
+                                    Beds = (int)reader["beds"],
+                                    Size = (int)reader["size"],
+                                    AirConditioning = (bool)reader["air_conditioning"],
+                                    Television = (bool)reader["television"],
+                                    MiniFridge = (bool)reader["mini_fridge"],
+                                    Jacuzzi = (bool)reader["jacuzzi"]
+                                };
+                                return room;
+                            }
+                            else if (roomType == RoomTypeEnum.Deluxe)
+                            {
+                                room = new DeluxeRoom
+                                {
+                                    Id = (int)reader["id"],
+                                    RoomNumber = (int)reader["room_number"],
+                                    RoomType = roomType,
+                                    Beds = (int)reader["beds"],
+                                    Size = (int)reader["size"],
+                                    AirConditioning = (bool)reader["air_conditioning"],
+                                    Television = (bool)reader["television"],
+                                    MiniFridge = (bool)reader["mini_fridge"],
+                                    Jacuzzi = (bool)reader["jacuzzi"],
+                                    Wifi = (bool)reader["wifi"]
+                                };
+                                return room;
+                            }
+                            else
+                            {
+                                return null;
+                            }
+                            
+                        }
+                        reader.Close();
+                        return null;
                     }
                     catch (NpgsqlException npg)
                     {
@@ -173,13 +263,13 @@ namespace HotelReservation.Models.DatabaseContext
             return result;
         }
         
-
         public int UpdateRoom(IRoom room)
         {
             int result;
             NpgsqlCommand command = new NpgsqlCommand(
-                "UPDATE rooms SET room_type = @room_type, beds = @beds, size = @size, air_conditioning = @air_conditioning, television = @television, mini_fridge = @mini_fridge, jacuzzi = @jacuzzi, wifi = @wifi WHERE room_number = @room_number");
+                "UPDATE rooms SET room_number = @room_number, room_type = @room_type, beds = @beds, size = @size, air_conditioning = @air_conditioning, television = @television, mini_fridge = @mini_fridge, jacuzzi = @jacuzzi, wifi = @wifi WHERE id = @id");
 
+            NpgsqlParameter idParam = new NpgsqlParameter("@id", room.Id);
             NpgsqlParameter roomNumberParam = new NpgsqlParameter("@room_number", room.RoomNumber);
             NpgsqlParameter roomTypeParam = new NpgsqlParameter("@room_type", room.RoomType.ToString());
             NpgsqlParameter bedsParam = new NpgsqlParameter("@beds", room.Beds);
@@ -210,42 +300,153 @@ namespace HotelReservation.Models.DatabaseContext
                 wifiParam.Value = deluxe.Wifi;
             }
 
-            result = ExecuteQuery(command, roomNumberParam, roomTypeParam, bedsParam, sizeParam, acParam, tvParam, miniFridgeParam, jacuzziParam, wifiParam);
+            result = ExecuteQuery(command, idParam, roomNumberParam, roomTypeParam, bedsParam, sizeParam, acParam, tvParam, miniFridgeParam, jacuzziParam, wifiParam);
 
             return result;
         }
 
         public int DeleteRoom(int roomId)
         {
-            int result;
-            NpgsqlCommand command = new NpgsqlCommand(
-                "DELETE FROM rooms WHERE room_number = @room_number");
+            try
+            {
+                double reservationsByRoomIdCount = GetReservationsByRoomId(roomId);
 
-            NpgsqlParameter roomNumberParam = new NpgsqlParameter("@room_number", roomId);
+                if (reservationsByRoomIdCount == 0)
+                {
+                    int result;
+                    NpgsqlCommand command = new NpgsqlCommand("DELETE FROM rooms WHERE id = @id");
 
-            result = ExecuteQuery(command, roomNumberParam);
+                    NpgsqlParameter idParam = new NpgsqlParameter("@id", roomId);
 
-            return result;
+                    result = ExecuteQuery(command, idParam);
 
+                    return result;
+                }
+                else
+                {
+                    throw new Exception("Cannot remove room since it is bound to a reservation.");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public ObservableCollection<Reservation> GetReservations()
         {
-            throw new NotImplementedException();
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
+            {
+                Reservation reservation = new Reservation();
+                string selectQuery = "SELECT * FROM reservation";
+                
+                using(NpgsqlCommand command = new NpgsqlCommand(selectQuery, conn))
+                {
+                    try
+                    {
+                        conn.Open();
+                        ObservableCollection<Reservation> reservations = new ObservableCollection<Reservation>();
+                        NpgsqlDataReader reader = command.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            int roomId = (int)reader["room_id"];
+                            reservation = new Reservation
+                            {
+                                Id = (int)reader["id"],
+                                RoomId = roomId,
+                                Room = GetOneRoom(roomId),
+                                Username = (string)reader["username"],
+                                StartDate = reader.GetDateTime(3),
+                                EndDate = reader.GetDateTime(4)
+                            };
+                            reservations.Add(reservation);
+                        }
+                        reader.Close();
+                        return reservations;
+                    }
+                    catch (NpgsqlException npg)
+                    {
+                        throw new Exception("An error ocurred when accessing database: " + npg.Message);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception("Error when loading reservationsaaa: " + ex.Message);
+                    }
+                }
+            }
+        }
+
+        public double GetReservationsByRoomId(int roomId)
+        {
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
+            {
+                string countQuery = "Select COUNT(*) from reservation WHERE room_id = @room_id";
+
+                using (NpgsqlCommand command = new NpgsqlCommand(countQuery, conn))
+                {
+                    command.Parameters.AddWithValue("@id", roomId);
+
+                    try
+                    {
+                        conn.Open();
+                        command.Connection = conn;
+
+                        return Convert.ToDouble(command.ExecuteScalar());
+                    }
+                    catch (NpgsqlException npg)
+                    {
+                        throw new Exception("An error ocurred when accessing database: " + npg.Message);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception("Error when loading reservation: " + ex.Message);
+                    }
+                }
+            }
         }
 
         public int InsertReservation(Reservation reservation)
         {
-            throw new NotImplementedException();
+            int result;
+            NpgsqlCommand command = new NpgsqlCommand(
+                "INSERT INTO reservation (room_id, username, start_date, end_date) VALUES (@room_id, @username, @start_date, @end_date)");
+            
+            NpgsqlParameter roomIdParam = new NpgsqlParameter("@room_id", reservation.Room.Id);
+            NpgsqlParameter usernameParam = new NpgsqlParameter("@username", reservation.Username);
+            NpgsqlParameter startDateParam = new NpgsqlParameter("@start_date", reservation.StartDate);
+            NpgsqlParameter endDateParam = new NpgsqlParameter("@end_date", reservation.EndDate);
+
+            result = ExecuteQuery(command, roomIdParam, usernameParam, startDateParam, endDateParam);
+
+            return result;
         }
 
         public int UpdateReservation(Reservation reservation)
         {
-            throw new NotImplementedException();
+            int result;
+            NpgsqlCommand command = new NpgsqlCommand(
+                "UPDATE reservation SET room_id = @room_id, username = @username, start_date = @start_date, end_date = @end_date WHERE id = @id");
+
+            NpgsqlParameter reservationIdParam = new NpgsqlParameter("@id", reservation.Id);
+            NpgsqlParameter roomIdParam = new NpgsqlParameter("@room_id", reservation.Room.Id);
+            NpgsqlParameter usernameParam = new NpgsqlParameter("@username", reservation.Username);
+            NpgsqlParameter startDateParam = new NpgsqlParameter("@start_date", reservation.StartDate);
+            NpgsqlParameter endDateParam = new NpgsqlParameter("@end_date", reservation.EndDate);
+
+            result = ExecuteQuery(command, reservationIdParam, roomIdParam, usernameParam, startDateParam, endDateParam);
+
+            return result;
         }
         public int DeleteReservation(int reservationId)
         {
-            throw new NotImplementedException();
+            int result;
+            NpgsqlCommand command = new NpgsqlCommand("DELETE FROM reservation WHERE id = @id");
+
+            NpgsqlParameter reservationIdParam = new NpgsqlParameter("@id", reservationId);
+
+            result = ExecuteQuery(command, reservationIdParam);
+
+            return result;
         }
     }
 }

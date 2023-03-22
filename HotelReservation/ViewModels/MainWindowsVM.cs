@@ -22,14 +22,14 @@ namespace HotelReservation.ViewModels
         private IRoom selectedRoom;
         private Reservation selectedReservation;
 
-        public ObservableCollection<Reservation> ReservationList
-        {
-            get { return reservationList; }
-        }
-
         public ObservableCollection<IRoom> RoomList
         {
             get { return roomList; }
+        }
+
+        public ObservableCollection<Reservation> ReservationList
+        {
+            get { return reservationList; }
         }
 
         public int RoomTypeItem
@@ -81,7 +81,7 @@ namespace HotelReservation.ViewModels
             try
             {
                 roomList = database.GetRooms();
-                reservationList = new ObservableCollection<Reservation>();
+                reservationList = database.GetReservations();
                 RoomTypeItem = (int)RoomTypeEnum.All;
             }
             catch (Exception ex)
@@ -180,7 +180,7 @@ namespace HotelReservation.ViewModels
                         roomList.Remove(SelectedRoom);
                         RoomTypeItem = (int)RoomTypeEnum.All;
 
-                        MessageBox.Show("Room deleted!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        MessageBox.Show("Room deleted!", "Attention", MessageBoxButton.OK, MessageBoxImage.Warning);
                     }
                     else
                     {
@@ -205,11 +205,28 @@ namespace HotelReservation.ViewModels
 
                 if (verifica.HasValue && verifica.Value)
                 {
-                    //insert db
-                    string text = screen.cbRooms.Text;
-                    IRoom room = roomList.FirstOrDefault(r => r.RoomNumber.ToString() == text);
-                    newReservation.Room = room;
-                    reservationList.Add(newReservation);
+                    try
+                    {
+                        string text = screen.cbRooms.Text;
+                        IRoom room = roomList.FirstOrDefault(r => r.RoomNumber.ToString() == text);
+                        newReservation.Room = room;
+
+                        int res = database.InsertReservation(newReservation);
+                        if (res == 1)
+                        {
+                            reservationList.Add(newReservation);
+
+                            MessageBox.Show("Reservation added successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
+                        else
+                        {
+                            throw new Exception("An error ocurred");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
             });
 
@@ -229,9 +246,26 @@ namespace HotelReservation.ViewModels
 
                         if (verifica.HasValue && verifica.Value)
                         {
-                            //update db
-                            SelectedReservation.CopyReservation(reservationToUpdate);
-                            Notifica(nameof(ReservationList)); //don't update-must check
+                            try
+                            {
+                                int res = database.UpdateReservation(reservationToUpdate);
+                                if (res == 1)
+                                {
+                                    SelectedReservation.CopyReservation(reservationToUpdate);
+                                    reservationList = database.GetReservations();
+                                    Notifica(nameof(ReservationList));
+
+                                    MessageBox.Show("Reservation updated successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                                }
+                                else
+                                {
+                                    throw new Exception("An error ocurred");
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            }
                         }
                     }
                     else
@@ -249,8 +283,12 @@ namespace HotelReservation.ViewModels
             {
                 try
                 {
-                    //delete db
-                    reservationList.Remove(SelectedReservation);
+                    int res = database.DeleteReservation(SelectedReservation.Id);
+                    if (res == 1)
+                    {
+                        reservationList.Remove(SelectedReservation);
+                        MessageBox.Show("Reservation deleted!", "Attention", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
                 }
                 catch (Exception ex)
                 {

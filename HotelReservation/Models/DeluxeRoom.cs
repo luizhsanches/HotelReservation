@@ -9,6 +9,7 @@ namespace HotelReservation.Models
 {
     public class DeluxeRoom : BaseNotifier, IDeluxeRoom
     {
+        private int _id {  get; set; }
         private int _roomNumber { get; set; }
         private RoomTypeEnum _roomType { get; set; }
         private int _beds { get; set; }
@@ -19,6 +20,7 @@ namespace HotelReservation.Models
         private bool _jacuzzi { get; set; }
         private bool _wifi { get; set; }
 
+        public int Id { get => _id; set { _id = value; Notifica(nameof(Id)); } }
         public int RoomNumber { get => _roomNumber; set { _roomNumber = value; Notifica(nameof(RoomNumber)); } }
         public RoomTypeEnum RoomType { get => _roomType; set { _roomType = value; Notifica(nameof(RoomType)); } }
         public int Beds { get => _beds; set { _beds = value; Notifica(nameof(Beds)); } }
@@ -31,8 +33,9 @@ namespace HotelReservation.Models
 
         public DeluxeRoom() { }
 
-        public DeluxeRoom(int roomNumber, RoomTypeEnum roomType, int beds, int size, bool airConditioning, bool television, bool miniFridge, bool jacuzzi, bool wifi)
+        public DeluxeRoom(int id, int roomNumber, RoomTypeEnum roomType, int beds, int size, bool airConditioning, bool television, bool miniFridge, bool jacuzzi, bool wifi)
         {
+            Id = id;
             RoomNumber = roomNumber;
             RoomType = roomType;
             Beds = beds;
@@ -52,6 +55,7 @@ namespace HotelReservation.Models
         public void CopyRoom(IRoom newRoom)
         {
             DeluxeRoom newDeluxe = (DeluxeRoom)newRoom;
+            Id = newDeluxe.Id;
             RoomNumber = newDeluxe.RoomNumber;
             RoomType = newDeluxe.RoomType;
             Beds = newDeluxe.Beds;

@@ -8,6 +8,7 @@ namespace HotelReservation.Models
 {
     public interface IRoom
     {
+        int Id { get; set; }
         int RoomNumber { get; set; }
         RoomTypeEnum RoomType { get; set; }
         int Beds { get; set; }
