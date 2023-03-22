@@ -1,4 +1,6 @@
-﻿using Npgsql;
+﻿using HotelReservation.Models.Classes;
+using HotelReservation.Models.Interfaces;
+using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -22,36 +24,6 @@ namespace HotelReservation.Models.DatabaseContext
             else
             {
                 connectionString = "Server=localhost;Port=5432;Database=hotel_reservation;User Id=postgres;Password=1234;Integrated Security=true;";
-            }
-        }
-
-        public int ExecuteQuery(NpgsqlCommand command, params NpgsqlParameter[] parameters)
-        {
-            try
-            {
-                using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
-                {
-                    conn.Open();
-                    using (command)
-                    {                
-                        command.Connection = conn;
-                        command.Parameters.AddRange(parameters);
-                        int result = command.ExecuteNonQuery();
-                        return result;
-                    }
-                }
-            }
-            catch (InvalidOperationException io)
-            {
-                throw new Exception("Invalid data." + io.Message);
-            }
-            catch (NpgsqlException npg)
-            {
-                throw new Exception("An error ocurred when accessing database: " + npg.Message);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error when loading rooms: " + ex.Message);
             }
         }
 
@@ -222,56 +194,99 @@ namespace HotelReservation.Models.DatabaseContext
             }
         }
 
+        public double GetRoomCountByRoomNumber(int roomNumber)
+        {
+            using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
+            {
+                string countQuery = "Select COUNT(*) from rooms WHERE room_number = @room_number";
+
+                using (NpgsqlCommand command = new NpgsqlCommand(countQuery, conn))
+                {
+                    command.Parameters.AddWithValue("@room_number", roomNumber);
+
+                    try
+                    {
+                        conn.Open();
+                        command.Connection = conn;
+
+                        return Convert.ToDouble(command.ExecuteScalar());
+                    }
+                    catch (NpgsqlException npg)
+                    {
+                        throw new Exception("An error ocurred when accessing database: " + npg.Message);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception("Error when loading reservation: " + ex.Message);
+                    }
+                }
+            }
+        }
+
         public int InsertRoom(IRoom room)
         {
-            int result;
-            NpgsqlCommand command = new NpgsqlCommand(
-                "INSERT INTO rooms (room_number, room_type, beds, size, air_conditioning, television, mini_fridge, jacuzzi, wifi) VALUES (@room_number, @room_type, @beds, @size, @air_conditioning, @television, @mini_fridge, @jacuzzi, @wifi)");
-
-            NpgsqlParameter roomNumberParam = new NpgsqlParameter("@room_number", room.RoomNumber);
-            NpgsqlParameter roomTypeParam = new NpgsqlParameter("@room_type", room.RoomType.ToString());
-            NpgsqlParameter bedsParam = new NpgsqlParameter("@beds", room.Beds);
-            NpgsqlParameter sizeParam = new NpgsqlParameter("@size", room.Size);
-            NpgsqlParameter acParam = new NpgsqlParameter("@air_conditioning", room.AirConditioning);
-            NpgsqlParameter tvParam = new NpgsqlParameter("@television", room.Television);
-            NpgsqlParameter miniFridgeParam = new NpgsqlParameter("@mini_fridge", room.MiniFridge);
-            NpgsqlParameter jacuzziParam = new NpgsqlParameter("@jacuzzi", false);
-            NpgsqlParameter wifiParam = new NpgsqlParameter("@wifi", false);
-
-            if (room.RoomType == RoomTypeEnum.Standard)
+            try
             {
-                StandardRoom standard = (StandardRoom)room;
-                acParam = new NpgsqlParameter("@air_conditioning", standard.AirConditioning);
-                tvParam = new NpgsqlParameter("@television", standard.Television);
-                miniFridgeParam = new NpgsqlParameter("@mini_fridge", standard.MiniFridge);
-            }
-            else if (room.RoomType == RoomTypeEnum.Executive)
-            {
-                ExecutiveRoom executive = (ExecutiveRoom)room;
-                jacuzziParam.ParameterName = "@jacuzzi";
-                jacuzziParam.Value = executive.Jacuzzi;
-            }
-            else if (room.RoomType == RoomTypeEnum.Deluxe)
-            {
-                DeluxeRoom deluxe = (DeluxeRoom)room;
-                wifiParam.ParameterName = "@wifi";
-                wifiParam.Value = deluxe.Wifi;
-            }
+                double roomCountByRoomNumber = GetRoomCountByRoomNumber(room.RoomNumber);
 
-            result = this.ExecuteQuery(command, roomNumberParam, roomTypeParam, bedsParam, sizeParam, acParam, tvParam, miniFridgeParam, jacuzziParam, wifiParam);
-            
-            return result;
+                if (roomCountByRoomNumber == 0)
+                {
+                    int result;
+                    NpgsqlCommand command = new NpgsqlCommand(
+                        "INSERT INTO rooms (room_number, room_type, beds, size, air_conditioning, television, mini_fridge, jacuzzi, wifi) VALUES (@room_number, @room_type, @beds, @size, @air_conditioning, @television, @mini_fridge, @jacuzzi, @wifi)");
+
+                    NpgsqlParameter roomNumberParam = new NpgsqlParameter("@room_number", room.RoomNumber);
+                    NpgsqlParameter roomTypeParam = new NpgsqlParameter("@room_type", room.RoomType.ToString());
+                    NpgsqlParameter bedsParam = new NpgsqlParameter("@beds", room.Beds);
+                    NpgsqlParameter sizeParam = new NpgsqlParameter("@size", room.Size);
+                    NpgsqlParameter acParam = new NpgsqlParameter("@air_conditioning", room.AirConditioning);
+                    NpgsqlParameter tvParam = new NpgsqlParameter("@television", room.Television);
+                    NpgsqlParameter miniFridgeParam = new NpgsqlParameter("@mini_fridge", room.MiniFridge);
+                    NpgsqlParameter jacuzziParam = new NpgsqlParameter("@jacuzzi", false);
+                    NpgsqlParameter wifiParam = new NpgsqlParameter("@wifi", false);
+
+                    if (room.RoomType == RoomTypeEnum.Standard)
+                    {
+                        StandardRoom standard = (StandardRoom)room;
+                        acParam = new NpgsqlParameter("@air_conditioning", standard.AirConditioning);
+                        tvParam = new NpgsqlParameter("@television", standard.Television);
+                        miniFridgeParam = new NpgsqlParameter("@mini_fridge", standard.MiniFridge);
+                    }
+                    else if (room.RoomType == RoomTypeEnum.Executive)
+                    {
+                        ExecutiveRoom executive = (ExecutiveRoom)room;
+                        jacuzziParam = new NpgsqlParameter("@jacuzzi", executive.Jacuzzi);
+                    }
+                    else if (room.RoomType == RoomTypeEnum.Deluxe)
+                    {
+                        DeluxeRoom deluxe = (DeluxeRoom)room;
+                        wifiParam = new NpgsqlParameter("@wifi", deluxe.Wifi);
+                    }
+
+                    result = this.ExecuteQuery(command, roomNumberParam, roomTypeParam, bedsParam,
+                        sizeParam, acParam, tvParam, miniFridgeParam, jacuzziParam, wifiParam);
+
+                    return result;
+                }
+                else
+                {
+                    throw new Exception("Cannot insert room because this room number is already inserted.");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
         
         public int UpdateRoom(IRoom room)
         {
             int result;
             NpgsqlCommand command = new NpgsqlCommand(
-                "UPDATE rooms SET room_number = @room_number, room_type = @room_type, beds = @beds, size = @size, air_conditioning = @air_conditioning, television = @television, mini_fridge = @mini_fridge, jacuzzi = @jacuzzi, wifi = @wifi WHERE id = @id");
+                "UPDATE rooms SET beds = @beds, size = @size, air_conditioning = @air_conditioning, television = @television, mini_fridge = @mini_fridge, jacuzzi = @jacuzzi, wifi = @wifi WHERE id = @id");
 
             NpgsqlParameter idParam = new NpgsqlParameter("@id", room.Id);
-            NpgsqlParameter roomNumberParam = new NpgsqlParameter("@room_number", room.RoomNumber);
-            NpgsqlParameter roomTypeParam = new NpgsqlParameter("@room_type", room.RoomType.ToString());
             NpgsqlParameter bedsParam = new NpgsqlParameter("@beds", room.Beds);
             NpgsqlParameter sizeParam = new NpgsqlParameter("@size", room.Size);
             NpgsqlParameter acParam = new NpgsqlParameter("@air_conditioning", room.AirConditioning);
@@ -290,17 +305,16 @@ namespace HotelReservation.Models.DatabaseContext
             else if (room.RoomType == RoomTypeEnum.Executive)
             {
                 ExecutiveRoom executive = (ExecutiveRoom)room;
-                jacuzziParam.ParameterName = "@jacuzzi";
-                jacuzziParam.Value = executive.Jacuzzi;
+                jacuzziParam = new NpgsqlParameter("@jacuzzi", executive.Jacuzzi);
             }
             else if (room.RoomType == RoomTypeEnum.Deluxe)
             {
                 DeluxeRoom deluxe = (DeluxeRoom)room;
-                wifiParam.ParameterName = "@wifi";
-                wifiParam.Value = deluxe.Wifi;
+                wifiParam = new NpgsqlParameter("@wifi", deluxe.Wifi);
             }
 
-            result = ExecuteQuery(command, idParam, roomNumberParam, roomTypeParam, bedsParam, sizeParam, acParam, tvParam, miniFridgeParam, jacuzziParam, wifiParam);
+            result = ExecuteQuery(command, idParam, bedsParam, 
+                sizeParam, acParam, tvParam, miniFridgeParam, jacuzziParam, wifiParam);
 
             return result;
         }
@@ -347,6 +361,7 @@ namespace HotelReservation.Models.DatabaseContext
                         conn.Open();
                         ObservableCollection<Reservation> reservations = new ObservableCollection<Reservation>();
                         NpgsqlDataReader reader = command.ExecuteReader();
+                        
                         while (reader.Read())
                         {
                             int roomId = (int)reader["room_id"];
@@ -361,6 +376,7 @@ namespace HotelReservation.Models.DatabaseContext
                             };
                             reservations.Add(reservation);
                         }
+
                         reader.Close();
                         return reservations;
                     }
@@ -370,7 +386,7 @@ namespace HotelReservation.Models.DatabaseContext
                     }
                     catch (Exception ex)
                     {
-                        throw new Exception("Error when loading reservationsaaa: " + ex.Message);
+                        throw new Exception("Error when loading reservations: " + ex.Message);
                     }
                 }
             }
@@ -447,6 +463,36 @@ namespace HotelReservation.Models.DatabaseContext
             result = ExecuteQuery(command, reservationIdParam);
 
             return result;
+        }
+
+        public int ExecuteQuery(NpgsqlCommand command, params NpgsqlParameter[] parameters)
+        {
+            try
+            {
+                using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
+                {
+                    conn.Open();
+                    using (command)
+                    {
+                        command.Connection = conn;
+                        command.Parameters.AddRange(parameters);
+                        int result = command.ExecuteNonQuery();
+                        return result;
+                    }
+                }
+            }
+            catch (InvalidOperationException io)
+            {
+                throw new Exception("Invalid data." + io.Message);
+            }
+            catch (NpgsqlException npg)
+            {
+                throw new Exception("An error ocurred when accessing database: " + npg.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error when loading rooms: " + ex.Message);
+            }
         }
     }
 }

@@ -1,5 +1,8 @@
 ﻿using HotelReservation.Models;
+using HotelReservation.Models.Classes;
 using HotelReservation.Models.DatabaseContext;
+using HotelReservation.Models.Interfaces;
+using HotelReservation.Models.Validators;
 using HotelReservation.ViewModels.VmUtils;
 using HotelReservation.Views;
 using System;
@@ -16,15 +19,27 @@ namespace HotelReservation.ViewModels
     public class MainWindowsVM : BaseNotifier
     {
         private readonly IDbContext database;
+        private RoomValidator roomValidator;
+        private ReservationValidator reservationValidator;
         private ObservableCollection<IRoom> roomList;
         private ObservableCollection<Reservation> reservationList;
         private int roomTypeItem;
         private IRoom selectedRoom;
         private Reservation selectedReservation;
 
-        public ObservableCollection<IRoom> RoomList
+        public IEnumerable<IRoom> RoomList
         {
-            get { return roomList; }
+            get
+            {
+                if (RoomTypeItem == (int)RoomTypeEnum.All)
+                {
+                    return roomList;
+                }
+                else
+                {
+                    return roomList.Where(room => room.RoomType == (RoomTypeEnum)Room.selectRoomTypeEnum(RoomTypeItem));
+                }
+            }
         }
 
         public ObservableCollection<Reservation> ReservationList
@@ -38,7 +53,7 @@ namespace HotelReservation.ViewModels
             set
             {
                 roomTypeItem = value;
-                Notifica(nameof(RoomTypeItem));
+                Notifica(nameof(RoomList));
             }
         }
 
@@ -80,6 +95,8 @@ namespace HotelReservation.ViewModels
             database = new PostgresDB();
             try
             {
+                roomValidator = new RoomValidator();
+                reservationValidator = new ReservationValidator();
                 roomList = database.GetRooms();
                 reservationList = database.GetReservations();
                 RoomTypeItem = (int)RoomTypeEnum.All;
@@ -95,7 +112,7 @@ namespace HotelReservation.ViewModels
         public void InitializeCommands()
         {
             AddRoom = new RelayCommand((object _) =>
-            {
+            {                
                 IRoom room = Room.selectRoomType(RoomTypeItem);
                 Window screen = Room.selectRoomWindow(RoomTypeItem);
                 Enum roomTypeEnum = Room.selectRoomTypeEnum(RoomTypeItem);
@@ -107,6 +124,7 @@ namespace HotelReservation.ViewModels
                 {
                     try
                     {
+                        roomValidator.Validate(room);
                         room.RoomType = (RoomTypeEnum)roomTypeEnum;
                         int res = database.InsertRoom(room);
                         if (res == 1)
@@ -144,6 +162,7 @@ namespace HotelReservation.ViewModels
                         {
                             try
                             {
+                                roomValidator.Validate(room);
                                 room.RoomType = (RoomTypeEnum)roomTypeEnum;
                                 int res = database.UpdateRoom(room);
                                 if (res == 1)
@@ -155,7 +174,7 @@ namespace HotelReservation.ViewModels
                                 }
                                 else
                                 {
-                                    throw new Exception("An error ocurred");
+                                    throw new Exception("An error ocurred...");
                                 }
                             }
                             catch (Exception ex)
@@ -224,6 +243,7 @@ namespace HotelReservation.ViewModels
                         string text = screen.cbRooms.Text;
                         IRoom room = roomList.FirstOrDefault(r => r.RoomNumber.ToString() == text);
                         newReservation.Room = room;
+                        reservationValidator.Validate(newReservation);
 
                         int res = database.InsertReservation(newReservation);
                         if (res == 1)

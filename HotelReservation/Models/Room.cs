@@ -1,4 +1,6 @@
-﻿using HotelReservation.ViewModels.VmUtils;
+﻿using HotelReservation.Models.Classes;
+using HotelReservation.Models.Interfaces;
+using HotelReservation.ViewModels.VmUtils;
 using HotelReservation.Views;
 using System;
 using System.Collections.Generic;

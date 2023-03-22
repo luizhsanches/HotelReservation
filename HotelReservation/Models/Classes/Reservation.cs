@@ -1,11 +1,12 @@
-﻿using System;
+﻿using HotelReservation.Models.Interfaces;
 using HotelReservation.ViewModels.VmUtils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HotelReservation.Models
+namespace HotelReservation.Models.Classes
 {
     public class Reservation : BaseNotifier
     {
@@ -31,8 +32,8 @@ namespace HotelReservation.Models
         }
 
         private string username;
-        public string Username 
-        { 
+        public string Username
+        {
             get { return username; }
             set { username = value; Notifica(nameof(Username)); }
         }
@@ -50,6 +51,8 @@ namespace HotelReservation.Models
             get { return endDate; }
             set { endDate = value; Notifica(nameof(EndDate)); }
         }
+
+        public TimeSpan length => EndDate.Subtract(StartDate);
 
         public Reservation() { }
 

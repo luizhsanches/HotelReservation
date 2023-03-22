@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HotelReservation.Models
+namespace HotelReservation.Models.Interfaces
 {
     public interface IRoom
     {
@@ -18,15 +18,5 @@ namespace HotelReservation.Models
         bool MiniFridge { get; set; }
         IRoom Clone();
         void CopyRoom(IRoom newRoom);
-    }
-
-    public interface IExecutiveRoom : IRoom
-    {
-        bool Jacuzzi { get; set; }
-    }
-
-    public interface IDeluxeRoom : IExecutiveRoom
-    {
-        bool Wifi { get; set; }
     }
 }

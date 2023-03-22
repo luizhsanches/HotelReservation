@@ -103,11 +103,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Models\DeluxeRoom.cs" />
-    <Compile Include="Models\ExecutiveRoom.cs" />
-    <Compile Include="Models\IRoomBase.cs" />
+    <Compile Include="Models\Classes\DeluxeRoom.cs" />
+    <Compile Include="Models\Classes\ExecutiveRoom.cs" />
+    <Compile Include="Models\Classes\Reservation.cs" />
+    <Compile Include="Models\Classes\StandardRoom.cs" />
+    <Compile Include="Models\Interfaces\IDeluxeRoom.cs" />
+    <Compile Include="Models\Interfaces\IExecutiveRoom.cs" />
+    <Compile Include="Models\Interfaces\IRoom.cs" />
+    <Compile Include="Models\Interfaces\IValidator.cs" />
     <Compile Include="Models\RoomType.cs" />
-    <Compile Include="Models\StandardRoom.cs" />
+    <Compile Include="Models\Validators\ReservationValidator.cs" />
+    <Compile Include="Models\Validators\RoomValidator.cs" />
     <Compile Include="ViewModels\MainWindowsVM.cs" />
     <Compile Include="ViewModels\VmUtils\BaseNotifier.cs" />
     <Compile Include="ViewModels\VmUtils\RelayCommand.cs" />
@@ -155,7 +161,6 @@
   <ItemGroup>
     <Compile Include="Models\DatabaseContext\IDbContext.cs" />
     <Compile Include="Models\DatabaseContext\PostgresDB.cs" />
-    <Compile Include="Models\Reservation.cs" />
     <Compile Include="Models\Room.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -183,9 +188,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\Validators\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets" Condition="Exists('..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

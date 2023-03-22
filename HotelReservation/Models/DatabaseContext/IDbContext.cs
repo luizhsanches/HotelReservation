@@ -1,4 +1,6 @@
-﻿using Npgsql;
+﻿using HotelReservation.Models.Classes;
+using HotelReservation.Models.Interfaces;
+using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,7 +15,7 @@ namespace HotelReservation.Models.DatabaseContext
     {
         ObservableCollection<IRoom> GetRooms();
         IRoom GetOneRoom(int roomId);
-        int ExecuteQuery(NpgsqlCommand command, params NpgsqlParameter[] parameters);
+        double GetRoomCountByRoomNumber(int roomNumber);        
         int InsertRoom(IRoom room);
         int UpdateRoom(IRoom room);
         int DeleteRoom(int roomId);
@@ -22,5 +24,6 @@ namespace HotelReservation.Models.DatabaseContext
         int InsertReservation(Reservation reservation);
         int UpdateReservation(Reservation reservation);
         int DeleteReservation(int reservationId);
+        int ExecuteQuery(NpgsqlCommand command, params NpgsqlParameter[] parameters);
     }
 }
