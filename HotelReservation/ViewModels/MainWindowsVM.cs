@@ -147,61 +147,54 @@ namespace HotelReservation.ViewModels
 
             EditRoom = new RelayCommand((object _) =>
             {
-                try
+                if (SelectedRoom != null)
                 {
-                    if (SelectedRoom != null)
+                    IRoom room = SelectedRoom.Clone();
+                    Window screen = Room.selectRoomWindow(RoomTypeItem);
+                    Enum roomTypeEnum = Room.selectRoomTypeEnum(RoomTypeItem);
+
+                    screen.DataContext = room;
+                    bool? verifica = screen.ShowDialog();
+
+                    if (verifica.HasValue && verifica.Value)
                     {
-                        IRoom room = SelectedRoom.Clone();
-                        Window screen = Room.selectRoomWindow(RoomTypeItem);
-                        Enum roomTypeEnum = Room.selectRoomTypeEnum(RoomTypeItem);
-
-                        screen.DataContext = room;
-                        bool? verifica = screen.ShowDialog();
-
-                        if (verifica.HasValue && verifica.Value)
+                        try
                         {
-                            try
+                            roomValidator.Validate(room);
+                            room.RoomType = (RoomTypeEnum)roomTypeEnum;
+                            int res = database.UpdateRoom(room);
+                            if (res == 1)
                             {
-                                roomValidator.Validate(room);
-                                room.RoomType = (RoomTypeEnum)roomTypeEnum;
-                                int res = database.UpdateRoom(room);
-                                if (res == 1)
-                                {
-                                    SelectedRoom.CopyRoom(room);
-                                    Notifica(nameof(RoomList));
+                                SelectedRoom.CopyRoom(room);
+                                Notifica(nameof(RoomList));
 
-                                    MessageBox.Show("Room updated successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                                }
-                                else
-                                {
-                                    throw new Exception("An error ocurred...");
-                                }
+                                MessageBox.Show("Room updated successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                             }
-                            catch (Exception ex)
+                            else
                             {
-                                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                MessageBox.Show("An error ocurred.");
                             }
                         }
-                    }
-                    else
-                    {
-                        throw new Exception("A room should be selected in the listview.");
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
                     }
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("A room should be selected in the listview.");
                 }
 
             }, (object _) => RoomTypeItem != (int)RoomTypeEnum.All);
 
             RemoveRoom = new RelayCommand((object _) =>
             {
-                try
+                if (SelectedRoom != null)
                 {
-                    if (SelectedRoom != null)
+                    try
                     {
-                        int res = database.DeleteRoom(SelectedRoom.RoomNumber);
+                        int res = database.DeleteRoom(SelectedRoom);
 
                         if (res == 1)
                         {
@@ -212,17 +205,17 @@ namespace HotelReservation.ViewModels
                         }
                         else
                         {
-                            throw new Exception("An error ocurred");
+                            MessageBox.Show("An error ocurred");
                         }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        throw new Exception("A room should be selected in the listview.");
+                        MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("A room should be selected in the listview.");
                 }
             });
 
@@ -243,9 +236,10 @@ namespace HotelReservation.ViewModels
                         string text = screen.cbRooms.Text;
                         IRoom room = roomList.FirstOrDefault(r => r.RoomNumber.ToString() == text);
                         newReservation.Room = room;
-                        reservationValidator.Validate(newReservation);
 
+                        reservationValidator.Validate(newReservation);
                         int res = database.InsertReservation(newReservation);
+
                         if (res == 1)
                         {
                             reservationList.Add(newReservation);
@@ -254,7 +248,7 @@ namespace HotelReservation.ViewModels
                         }
                         else
                         {
-                            throw new Exception("An error ocurred");
+                            MessageBox.Show("An error ocurred");
                         }
                     }
                     catch (Exception ex)
@@ -266,74 +260,73 @@ namespace HotelReservation.ViewModels
 
             EditReservation = new RelayCommand((object _) =>
             {
-                try
+                if (SelectedReservation != null)
                 {
-                    if (SelectedReservation != null)
+                    Reservation reservationToUpdate = SelectedReservation.Clone();
+                    ReservationView screen = new ReservationView();
+                    screen.DataContext = reservationToUpdate;
+                    screen.cbRooms.ItemsSource = roomList;
+                    screen.cbRooms.DisplayMemberPath = "RoomNumber";
+                    screen.cbRooms.SelectedValue = reservationToUpdate.Room.RoomNumber.ToString();
+                    bool? verifica = screen.ShowDialog();
+
+                    if (verifica.HasValue && verifica.Value)
                     {
-                        Reservation reservationToUpdate = SelectedReservation.Clone();
-                        ReservationView screen = new ReservationView();
-                        screen.DataContext = reservationToUpdate;
-                        screen.cbRooms.ItemsSource = roomList;
-                        screen.cbRooms.DisplayMemberPath = "RoomNumber";
-                        screen.cbRooms.SelectedValue = reservationToUpdate.Room.RoomNumber.ToString();
-                        bool? verifica = screen.ShowDialog();
-
-                        if (verifica.HasValue && verifica.Value)
+                        try
                         {
-                            try
-                            {
-                                int res = database.UpdateReservation(reservationToUpdate);
-                                if (res == 1)
-                                {
-                                    SelectedReservation.CopyReservation(reservationToUpdate);
-                                    reservationList = database.GetReservations();
-                                    Notifica(nameof(ReservationList));
+                            reservationValidator.Validate(reservationToUpdate);
+                            int res = database.UpdateReservation(reservationToUpdate);
 
-                                    MessageBox.Show("Reservation updated successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                                }
-                                else
-                                {
-                                    throw new Exception("An error ocurred");
-                                }
-                            }
-                            catch (Exception ex)
+                            if (res == 1)
                             {
-                                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                SelectedReservation.CopyReservation(reservationToUpdate);
+                                reservationList = database.GetReservations();
+                                Notifica(nameof(ReservationList));
+
+                                MessageBox.Show("Reservation updated successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                            }
+                            else
+                            {
+                                MessageBox.Show("An error ocurred");
                             }
                         }
-                    }
-                    else
-                    {
-                        throw new Exception("A reservation should be selected in the listview.");
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
                     }
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("A reservation should be selected in the listview.");
                 }
             });
 
             RemoveReservation = new RelayCommand((object _) =>
             {
-                try
+                if (SelectedReservation != null)
                 {
-                    if (SelectedReservation != null)
+                    try
                     {
-                        int res = database.DeleteReservation(SelectedReservation.Id);
+                        int res = database.DeleteReservation(SelectedReservation);
                         if (res == 1)
                         {
                             reservationList.Remove(SelectedReservation);
                             MessageBox.Show("Reservation deleted!", "Attention", MessageBoxButton.OK, MessageBoxImage.Warning);
                         }
+                        else
+                        {
+                            MessageBox.Show("An error ocurred");
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        throw new Exception("A reservation should be selected in the listview.");
-                    }                    
+                        MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("A reservation should be selected in the listview.");
                 }
             });
 

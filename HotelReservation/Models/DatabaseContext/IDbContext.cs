@@ -15,15 +15,15 @@ namespace HotelReservation.Models.DatabaseContext
     {
         ObservableCollection<IRoom> GetRooms();
         IRoom GetOneRoom(int roomId);
-        double GetRoomCountByRoomNumber(int roomNumber);        
+        bool GetRoomCountByRoomNumber(int roomNumber);        
         int InsertRoom(IRoom room);
         int UpdateRoom(IRoom room);
-        int DeleteRoom(int roomId);
+        int DeleteRoom(IRoom room);
         ObservableCollection<Reservation> GetReservations();
-        double GetReservationsByRoomId(int roomId);
+        bool GetReservationsByRoomId(int roomId);
         int InsertReservation(Reservation reservation);
         int UpdateReservation(Reservation reservation);
-        int DeleteReservation(int reservationId);
+        int DeleteReservation(Reservation reservation);
         int ExecuteQuery(NpgsqlCommand command, params NpgsqlParameter[] parameters);
     }
 }

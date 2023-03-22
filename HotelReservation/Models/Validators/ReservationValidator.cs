@@ -9,7 +9,7 @@ using System.Windows.Input;
 
 namespace HotelReservation.Models.Validators
 {
-    public class ReservationValidator : IValidator<Reservation>
+    public class ReservationValidator
     {
         public void Validate(Reservation obj)
         {
@@ -17,8 +17,6 @@ namespace HotelReservation.Models.Validators
             {
                 throw new ArgumentException("Username must be at least 3 characters long.");
             }
-
-            // validar combobox 
 
             if (obj.length.TotalMinutes < 0)
             {

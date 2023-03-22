@@ -11,7 +11,7 @@
     <Window.Resources>
         <ObjectDataProvider x:Key="EnumDataSource" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
             <ObjectDataProvider.MethodParameters>
-                <x:Type Type="local1:RoomTypeEnum" />
+                <x:Type TypeName="local1:RoomTypeEnum"></x:Type>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
     </Window.Resources>

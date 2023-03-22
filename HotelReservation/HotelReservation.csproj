@@ -110,7 +110,6 @@
     <Compile Include="Models\Interfaces\IDeluxeRoom.cs" />
     <Compile Include="Models\Interfaces\IExecutiveRoom.cs" />
     <Compile Include="Models\Interfaces\IRoom.cs" />
-    <Compile Include="Models\Interfaces\IValidator.cs" />
     <Compile Include="Models\RoomType.cs" />
     <Compile Include="Models\Validators\ReservationValidator.cs" />
     <Compile Include="Models\Validators\RoomValidator.cs" />

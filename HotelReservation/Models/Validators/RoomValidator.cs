@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace HotelReservation.Models.Validators
 {
-    public class RoomValidator : IValidator<IRoom>
+    public class RoomValidator
     {
         public void Validate(IRoom obj)
         {

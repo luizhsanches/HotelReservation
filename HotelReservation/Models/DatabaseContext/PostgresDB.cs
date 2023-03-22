@@ -8,6 +8,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace HotelReservation.Models.DatabaseContext
 {
@@ -188,13 +189,13 @@ namespace HotelReservation.Models.DatabaseContext
                     }
                     catch (Exception ex)
                     {
-                        throw new Exception("Error when loading rooms: " + ex.Message);
+                        throw new Exception("Error when loading room: " + ex.Message);
                     }
                 }
             }
         }
 
-        public double GetRoomCountByRoomNumber(int roomNumber)
+        public bool GetRoomCountByRoomNumber(int roomNumber)
         {
             using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
@@ -209,15 +210,11 @@ namespace HotelReservation.Models.DatabaseContext
                         conn.Open();
                         command.Connection = conn;
 
-                        return Convert.ToDouble(command.ExecuteScalar());
-                    }
-                    catch (NpgsqlException npg)
-                    {
-                        throw new Exception("An error ocurred when accessing database: " + npg.Message);
+                        return Convert.ToBoolean(command.ExecuteScalar());
                     }
                     catch (Exception ex)
                     {
-                        throw new Exception("Error when loading reservation: " + ex.Message);
+                        throw ex;
                     }
                 }
             }
@@ -227,9 +224,9 @@ namespace HotelReservation.Models.DatabaseContext
         {
             try
             {
-                double roomCountByRoomNumber = GetRoomCountByRoomNumber(room.RoomNumber);
+                bool roomCountByRoomNumber = GetRoomCountByRoomNumber(room.RoomNumber);
 
-                if (roomCountByRoomNumber == 0)
+                if (!roomCountByRoomNumber)
                 {
                     int result;
                     NpgsqlCommand command = new NpgsqlCommand(
@@ -270,9 +267,9 @@ namespace HotelReservation.Models.DatabaseContext
                 }
                 else
                 {
-                    throw new Exception("Cannot insert room because this room number is already inserted.");
+                    MessageBox.Show("Cannot insert room because this room number is already inserted.");
+                    return -1;
                 }
-
             }
             catch (Exception ex)
             {
@@ -319,18 +316,18 @@ namespace HotelReservation.Models.DatabaseContext
             return result;
         }
 
-        public int DeleteRoom(int roomId)
+        public int DeleteRoom(IRoom room)
         {
             try
             {
-                double reservationsByRoomIdCount = GetReservationsByRoomId(roomId);
+                bool reservationsByRoomIdCount = GetReservationsByRoomId(room.Id);
 
-                if (reservationsByRoomIdCount == 0)
+                if (!reservationsByRoomIdCount)
                 {
                     int result;
                     NpgsqlCommand command = new NpgsqlCommand("DELETE FROM rooms WHERE id = @id");
 
-                    NpgsqlParameter idParam = new NpgsqlParameter("@id", roomId);
+                    NpgsqlParameter idParam = new NpgsqlParameter("@id", room.Id);
 
                     result = ExecuteQuery(command, idParam);
 
@@ -338,7 +335,8 @@ namespace HotelReservation.Models.DatabaseContext
                 }
                 else
                 {
-                    throw new Exception("Cannot remove room since it is bound to a reservation.");
+                    MessageBox.Show("Cannot remove room since it is bound to a reservation.");
+                    return -1;
                 }
             }
             catch (Exception ex)
@@ -392,7 +390,7 @@ namespace HotelReservation.Models.DatabaseContext
             }
         }
 
-        public double GetReservationsByRoomId(int roomId)
+        public bool GetReservationsByRoomId(int roomId)
         {
             using (NpgsqlConnection conn = new NpgsqlConnection(connectionString))
             {
@@ -400,22 +398,18 @@ namespace HotelReservation.Models.DatabaseContext
 
                 using (NpgsqlCommand command = new NpgsqlCommand(countQuery, conn))
                 {
-                    command.Parameters.AddWithValue("@id", roomId);
+                    command.Parameters.AddWithValue("@room_id", roomId);
 
                     try
                     {
                         conn.Open();
                         command.Connection = conn;
 
-                        return Convert.ToDouble(command.ExecuteScalar());
-                    }
-                    catch (NpgsqlException npg)
-                    {
-                        throw new Exception("An error ocurred when accessing database: " + npg.Message);
+                        return Convert.ToBoolean(command.ExecuteScalar());
                     }
                     catch (Exception ex)
                     {
-                        throw new Exception("Error when loading reservation: " + ex.Message);
+                        throw ex;
                     }
                 }
             }
@@ -453,12 +447,12 @@ namespace HotelReservation.Models.DatabaseContext
 
             return result;
         }
-        public int DeleteReservation(int reservationId)
+        public int DeleteReservation(Reservation reservation)
         {
             int result;
             NpgsqlCommand command = new NpgsqlCommand("DELETE FROM reservation WHERE id = @id");
 
-            NpgsqlParameter reservationIdParam = new NpgsqlParameter("@id", reservationId);
+            NpgsqlParameter reservationIdParam = new NpgsqlParameter("@id", reservation.Id);
 
             result = ExecuteQuery(command, reservationIdParam);
 
@@ -481,17 +475,9 @@ namespace HotelReservation.Models.DatabaseContext
                     }
                 }
             }
-            catch (InvalidOperationException io)
-            {
-                throw new Exception("Invalid data." + io.Message);
-            }
-            catch (NpgsqlException npg)
-            {
-                throw new Exception("An error ocurred when accessing database: " + npg.Message);
-            }
             catch (Exception ex)
             {
-                throw new Exception("Error when loading rooms: " + ex.Message);
+                throw ex;
             }
         }
     }
