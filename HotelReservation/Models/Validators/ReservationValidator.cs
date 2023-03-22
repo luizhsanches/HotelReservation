@@ -1,4 +1,4 @@
-﻿using HotelReservation.Models.Classes;
+﻿using HotelReservation.Models.Reservations;
 using HotelReservation.Models.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -18,7 +18,7 @@ namespace HotelReservation.Models.Validators
                 throw new ArgumentException("Username must be at least 3 characters long.");
             }
 
-            if (obj.length.TotalMinutes < 0)
+            if (obj.Length.TotalMinutes < 0)
             {
                 throw new ArgumentException("Start Date must not be greater than End Date");
             }

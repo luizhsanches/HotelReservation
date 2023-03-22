@@ -17,7 +17,7 @@
         <CheckBox Content="Air Conditioning" IsChecked="{Binding AirConditioning}" HorizontalAlignment="Left" Margin="100,161,0,0" VerticalAlignment="Top"/>
         <CheckBox Content="Television" IsChecked="{Binding Television}" HorizontalAlignment="Left" Margin="223,161,0,0" VerticalAlignment="Top"/>
         <CheckBox Content="Mini Fridge" IsChecked="{Binding MiniFridge}" HorizontalAlignment="Left" Margin="323,161,0,0" VerticalAlignment="Top"/>
-        <Button Content="Submit" Click="btnSubmitStd" HorizontalAlignment="Center" Margin="0,215,0,0" VerticalAlignment="Top" Width="102" Height="28"/>
+        <Button Content="Submit" Click="BtnSubmitStd" HorizontalAlignment="Center" Margin="0,215,0,0" VerticalAlignment="Top" Width="102" Height="28"/>
 
     </Grid>
 </Window>

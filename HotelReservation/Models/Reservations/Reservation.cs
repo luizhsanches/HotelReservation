@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HotelReservation.Models.Classes
+namespace HotelReservation.Models.Reservations
 {
     public class Reservation : BaseNotifier
     {
@@ -52,7 +52,7 @@ namespace HotelReservation.Models.Classes
             set { endDate = value; Notifica(nameof(EndDate)); }
         }
 
-        public TimeSpan length => EndDate.Subtract(StartDate);
+        public TimeSpan Length => EndDate.Subtract(StartDate);
 
         public Reservation() { }
 

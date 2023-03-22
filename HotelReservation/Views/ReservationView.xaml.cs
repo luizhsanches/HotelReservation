@@ -24,7 +24,7 @@ namespace HotelReservation.Views
             InitializeComponent();
         }
 
-        public void btnSubmit(object sender, RoutedEventArgs e)
+        public void BtnSubmit(object sender, RoutedEventArgs e)
         {
             DialogResult = true;
         }

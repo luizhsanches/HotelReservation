@@ -1,4 +1,5 @@
-﻿using HotelReservation.Models.Classes;
+﻿using HotelReservation.Models.Rooms;
+using HotelReservation.Models.Reservations;
 using HotelReservation.Models.Interfaces;
 using Npgsql;
 using System;

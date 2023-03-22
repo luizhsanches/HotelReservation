@@ -15,7 +15,7 @@
         <DatePicker Name="dpStart" SelectedDate="{Binding StartDate, StringFormat={}{0:dd/MM/yyyy}}" HorizontalAlignment="Left" Margin="40,187,0,0" VerticalAlignment="Top"/>
         <Label Content="End Date" HorizontalAlignment="Left" Margin="231,161,0,0" VerticalAlignment="Top"/>
         <DatePicker Name="dpEnd" SelectedDate="{Binding EndDate, StringFormat={}{0:dd/MM/yyyy}}" HorizontalAlignment="Left" Margin="231,187,0,0" VerticalAlignment="Top"/>
-        <Button Content="Submit" Click="btnSubmit" HorizontalAlignment="Center" Margin="0,267,0,0" VerticalAlignment="Top" Width="100"/>
+        <Button Content="Submit" Click="BtnSubmit" HorizontalAlignment="Center" Margin="0,267,0,0" VerticalAlignment="Top" Width="100"/>
 
     </Grid>
 </Window>

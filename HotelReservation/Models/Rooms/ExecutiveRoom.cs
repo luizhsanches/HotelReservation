@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HotelReservation.Models.Classes
+namespace HotelReservation.Models.Rooms
 {
-    public class DeluxeRoom : BaseNotifier, IDeluxeRoom
+    public class ExecutiveRoom : BaseNotifier, IExecutiveRoom
     {
         private int _id { get; set; }
         private int _roomNumber { get; set; }
@@ -19,7 +19,6 @@ namespace HotelReservation.Models.Classes
         private bool _television { get; set; }
         private bool _miniFridge { get; set; }
         private bool _jacuzzi { get; set; }
-        private bool _wifi { get; set; }
 
         public int Id { get => _id; set { _id = value; Notifica(nameof(Id)); } }
         public int RoomNumber { get => _roomNumber; set { _roomNumber = value; Notifica(nameof(RoomNumber)); } }
@@ -30,11 +29,10 @@ namespace HotelReservation.Models.Classes
         public bool Television { get => _television; set { _television = value; Notifica(nameof(Television)); } }
         public bool MiniFridge { get => _miniFridge; set { _miniFridge = value; Notifica(nameof(MiniFridge)); } }
         public bool Jacuzzi { get => _jacuzzi; set { _jacuzzi = value; Notifica(nameof(Jacuzzi)); } }
-        public bool Wifi { get => _wifi; set { _wifi = value; Notifica(nameof(Wifi)); } }
 
-        public DeluxeRoom() { }
+        public ExecutiveRoom() { }
 
-        public DeluxeRoom(int id, int roomNumber, RoomTypeEnum roomType, int beds, int size, bool airConditioning, bool television, bool miniFridge, bool jacuzzi, bool wifi)
+        public ExecutiveRoom(int id, int roomNumber, RoomTypeEnum roomType, int beds, int size, bool airConditioning, bool television, bool miniFridge, bool jacuzzi)
         {
             Id = id;
             RoomNumber = roomNumber;
@@ -45,27 +43,25 @@ namespace HotelReservation.Models.Classes
             Television = television;
             MiniFridge = miniFridge;
             Jacuzzi = jacuzzi;
-            Wifi = wifi;
         }
 
         public IRoom Clone()
         {
-            return (DeluxeRoom)this.MemberwiseClone();
+            return (ExecutiveRoom)this.MemberwiseClone();
         }
 
         public void CopyRoom(IRoom newRoom)
         {
-            DeluxeRoom newDeluxe = (DeluxeRoom)newRoom;
-            Id = newDeluxe.Id;
-            RoomNumber = newDeluxe.RoomNumber;
-            RoomType = newDeluxe.RoomType;
-            Beds = newDeluxe.Beds;
-            Size = newDeluxe.Size;
-            AirConditioning = newDeluxe.AirConditioning;
-            Television = newDeluxe.Television;
-            MiniFridge = newDeluxe.MiniFridge;
-            Jacuzzi = newDeluxe.Jacuzzi;
-            Wifi = newDeluxe.Wifi;
+            ExecutiveRoom newExecutive = (ExecutiveRoom)newRoom;
+            Id = newExecutive.Id;
+            RoomNumber = newExecutive.RoomNumber;
+            RoomType = newExecutive.RoomType;
+            Beds = newExecutive.Beds;
+            Size = newExecutive.Size;
+            AirConditioning = newExecutive.AirConditioning;
+            Television = newExecutive.Television;
+            MiniFridge = newExecutive.MiniFridge;
+            Jacuzzi = newExecutive.Jacuzzi;
         }
     }
 }

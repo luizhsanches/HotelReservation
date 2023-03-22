@@ -1,4 +1,4 @@
-﻿using HotelReservation.Models.Classes;
+﻿using HotelReservation.Models.Rooms;
 using HotelReservation.Models.Interfaces;
 using HotelReservation.ViewModels.VmUtils;
 using HotelReservation.Views;
@@ -13,7 +13,7 @@ namespace HotelReservation.Models
 {
     public static class Room
     {
-        public static IRoom selectRoomType(int roomTypeItem)
+        public static IRoom SelectRoomType(int roomTypeItem)
         {
             if (roomTypeItem == (int)RoomTypeEnum.Standard)
             {
@@ -31,7 +31,7 @@ namespace HotelReservation.Models
             return null;
         }
 
-        public static Enum selectRoomTypeEnum(int roomTypeItem)
+        public static Enum SelectRoomTypeEnum(int roomTypeItem)
         {
             if (roomTypeItem == (int)RoomTypeEnum.Standard)
             {
@@ -49,7 +49,7 @@ namespace HotelReservation.Models
             return null;
         }
 
-        public static Window selectRoomWindow(int roomTypeItem)
+        public static Window SelectRoomWindow(int roomTypeItem)
         {
             if (roomTypeItem == (int)RoomTypeEnum.Standard)
             {

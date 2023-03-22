@@ -1,5 +1,5 @@
 ﻿using HotelReservation.Models;
-using HotelReservation.Models.Classes;
+using HotelReservation.Models.Reservations;
 using HotelReservation.Models.DatabaseContext;
 using HotelReservation.Models.Interfaces;
 using HotelReservation.Models.Validators;
@@ -37,7 +37,7 @@ namespace HotelReservation.ViewModels
                 }
                 else
                 {
-                    return roomList.Where(room => room.RoomType == (RoomTypeEnum)Room.selectRoomTypeEnum(RoomTypeItem));
+                    return roomList.Where(room => room.RoomType == (RoomTypeEnum)Room.SelectRoomTypeEnum(RoomTypeItem));
                 }
             }
         }
@@ -113,9 +113,9 @@ namespace HotelReservation.ViewModels
         {
             AddRoom = new RelayCommand((object _) =>
             {                
-                IRoom room = Room.selectRoomType(RoomTypeItem);
-                Window screen = Room.selectRoomWindow(RoomTypeItem);
-                Enum roomTypeEnum = Room.selectRoomTypeEnum(RoomTypeItem);
+                IRoom room = Room.SelectRoomType(RoomTypeItem);
+                Window screen = Room.SelectRoomWindow(RoomTypeItem);
+                Enum roomTypeEnum = Room.SelectRoomTypeEnum(RoomTypeItem);
                 
                 screen.DataContext = room;
                 bool? verifica = screen.ShowDialog();
@@ -150,8 +150,8 @@ namespace HotelReservation.ViewModels
                 if (SelectedRoom != null)
                 {
                     IRoom room = SelectedRoom.Clone();
-                    Window screen = Room.selectRoomWindow(RoomTypeItem);
-                    Enum roomTypeEnum = Room.selectRoomTypeEnum(RoomTypeItem);
+                    Window screen = Room.SelectRoomWindow(RoomTypeItem);
+                    Enum roomTypeEnum = Room.SelectRoomTypeEnum(RoomTypeItem);
 
                     screen.DataContext = room;
                     bool? verifica = screen.ShowDialog();

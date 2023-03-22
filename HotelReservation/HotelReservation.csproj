@@ -103,13 +103,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Models\Classes\DeluxeRoom.cs" />
-    <Compile Include="Models\Classes\ExecutiveRoom.cs" />
-    <Compile Include="Models\Classes\Reservation.cs" />
-    <Compile Include="Models\Classes\StandardRoom.cs" />
+    <Compile Include="Models\Rooms\DeluxeRoom.cs" />
+    <Compile Include="Models\Rooms\ExecutiveRoom.cs" />
+    <Compile Include="Models\Rooms\StandardRoom.cs" />
     <Compile Include="Models\Interfaces\IDeluxeRoom.cs" />
     <Compile Include="Models\Interfaces\IExecutiveRoom.cs" />
     <Compile Include="Models\Interfaces\IRoom.cs" />
+    <Compile Include="Models\Reservations\Reservation.cs" />
     <Compile Include="Models\RoomType.cs" />
     <Compile Include="Models\Validators\ReservationValidator.cs" />
     <Compile Include="Models\Validators\RoomValidator.cs" />
