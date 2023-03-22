@@ -1,4 +1,5 @@
 ﻿using System;
+using HotelReservation.ViewModels.VmUtils;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace HotelReservation.Models
 {
-    public class Reservation
+    public class Reservation : BaseNotifier
     {
         private int id;
         public int Id
@@ -33,21 +34,21 @@ namespace HotelReservation.Models
         public string Username 
         { 
             get { return username; }
-            set { username = value; }
+            set { username = value; Notifica(nameof(Username)); }
         }
 
-        private DateTime startDate;
+        private DateTime startDate = DateTime.Now;
         public DateTime StartDate
         {
             get { return startDate; }
-            set { startDate = value; }
+            set { startDate = value; Notifica(nameof(StartDate)); }
         }
 
-        private DateTime endDate;
+        private DateTime endDate = DateTime.Now;
         public DateTime EndDate
         {
             get { return endDate; }
-            set { endDate = value; }
+            set { endDate = value; Notifica(nameof(EndDate)); }
         }
 
         public Reservation() { }

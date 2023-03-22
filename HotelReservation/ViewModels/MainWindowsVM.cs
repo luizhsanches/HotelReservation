@@ -142,18 +142,25 @@ namespace HotelReservation.ViewModels
 
                         if (verifica.HasValue && verifica.Value)
                         {
-                            room.RoomType = (RoomTypeEnum)roomTypeEnum;
-                            int res = database.UpdateRoom(room);
-                            if (res == 1)
+                            try
                             {
-                                SelectedRoom.CopyRoom(room);
-                                Notifica(nameof(RoomList));
+                                room.RoomType = (RoomTypeEnum)roomTypeEnum;
+                                int res = database.UpdateRoom(room);
+                                if (res == 1)
+                                {
+                                    SelectedRoom.CopyRoom(room);
+                                    Notifica(nameof(RoomList));
 
-                                MessageBox.Show("Room updated successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                                    MessageBox.Show("Room updated successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                                }
+                                else
+                                {
+                                    throw new Exception("An error ocurred");
+                                }
                             }
-                            else
+                            catch (Exception ex)
                             {
-                                throw new Exception("An error ocurred");
+                                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                             }
                         }
                     }
@@ -173,18 +180,25 @@ namespace HotelReservation.ViewModels
             {
                 try
                 {
-                    int res = database.DeleteRoom(SelectedRoom.RoomNumber);
-
-                    if (res == 1)
+                    if (SelectedRoom != null)
                     {
-                        roomList.Remove(SelectedRoom);
-                        RoomTypeItem = (int)RoomTypeEnum.All;
+                        int res = database.DeleteRoom(SelectedRoom.RoomNumber);
 
-                        MessageBox.Show("Room deleted!", "Attention", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        if (res == 1)
+                        {
+                            roomList.Remove(SelectedRoom);
+                            RoomTypeItem = (int)RoomTypeEnum.All;
+
+                            MessageBox.Show("Room deleted!", "Attention", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        }
+                        else
+                        {
+                            throw new Exception("An error ocurred");
+                        }
                     }
                     else
                     {
-                        throw new Exception("An error ocurred");
+                        throw new Exception("A room should be selected in the listview.");
                     }
                 }
                 catch (Exception ex)
@@ -275,7 +289,7 @@ namespace HotelReservation.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message);
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             });
 
@@ -283,16 +297,23 @@ namespace HotelReservation.ViewModels
             {
                 try
                 {
-                    int res = database.DeleteReservation(SelectedReservation.Id);
-                    if (res == 1)
+                    if (SelectedReservation != null)
                     {
-                        reservationList.Remove(SelectedReservation);
-                        MessageBox.Show("Reservation deleted!", "Attention", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        int res = database.DeleteReservation(SelectedReservation.Id);
+                        if (res == 1)
+                        {
+                            reservationList.Remove(SelectedReservation);
+                            MessageBox.Show("Reservation deleted!", "Attention", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        }
                     }
+                    else
+                    {
+                        throw new Exception("A reservation should be selected in the listview.");
+                    }                    
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message);
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             });
 
