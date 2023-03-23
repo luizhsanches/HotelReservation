@@ -1,12 +1,7 @@
 ﻿using HotelReservation.Models.Rooms;
 using HotelReservation.Models.Interfaces;
-using HotelReservation.ViewModels.VmUtils;
 using HotelReservation.Views;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace HotelReservation.Models
