@@ -41,7 +41,7 @@ namespace HotelReservation.Models.Reservations
             set { startDate = value; Notifica(nameof(StartDate)); }
         }
 
-        private DateTime endDate = DateTime.Now;
+        private DateTime endDate = DateTime.Now.AddDays(1);
         public DateTime EndDate
         {
             get { return endDate; }

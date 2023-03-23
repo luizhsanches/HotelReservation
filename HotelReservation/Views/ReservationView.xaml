@@ -10,7 +10,7 @@
         <Label Content="Name" HorizontalAlignment="Left" Margin="40,31,0,0" VerticalAlignment="Top"/>
         <TextBox HorizontalAlignment="Left" Margin="40,57,0,0" TextWrapping="Wrap" Text="{Binding Username}" VerticalAlignment="Top" Width="372"/>
         <Label Content="Room Number" HorizontalAlignment="Left" Margin="40,94,0,0" VerticalAlignment="Top"/>
-        <ComboBox Name="cbRooms" HorizontalAlignment="Left" Margin="40,120,0,0" VerticalAlignment="Top" Width="120"/>
+        <ComboBox Name="cbRooms" DisplayMemberPath="RoomNumber" HorizontalAlignment="Left" Margin="40,120,0,0" VerticalAlignment="Top" Width="120"/>
         <Label Content="Start Date" HorizontalAlignment="Left" Margin="40,161,0,0" VerticalAlignment="Top"/>
         <DatePicker Name="dpStart" SelectedDate="{Binding StartDate, StringFormat={}{0:dd/MM/yyyy}}" HorizontalAlignment="Left" Margin="40,187,0,0" VerticalAlignment="Top"/>
         <Label Content="End Date" HorizontalAlignment="Left" Margin="231,161,0,0" VerticalAlignment="Top"/>

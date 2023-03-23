@@ -129,6 +129,7 @@ namespace HotelReservation.ViewModels
                         {
                             roomList.Add(room);
                             MessageBox.Show("Room added successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                            Notifica(nameof(RoomList));
                         }
                         else
                         {
@@ -231,22 +232,29 @@ namespace HotelReservation.ViewModels
                 {
                     try
                     {
-                        string text = screen.cbRooms.Text;
-                        IRoom room = roomList.FirstOrDefault(r => r.RoomNumber.ToString() == text);
-                        newReservation.Room = room;
-
-                        reservationValidator.Validate(newReservation);
-                        int res = database.InsertReservation(newReservation);
-
-                        if (res == 1)
+                        string cbText = screen.cbRooms.Text;
+                        if (!string.IsNullOrEmpty(cbText))
                         {
-                            reservationList.Add(newReservation);
+                            IRoom room = roomList.FirstOrDefault(r => r.RoomNumber.ToString() == cbText);
+                            newReservation.Room = room;
 
-                            MessageBox.Show("Reservation added successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                            reservationValidator.Validate(newReservation);
+                            int res = database.InsertReservation(newReservation);
+
+                            if (res == 1)
+                            {
+                                reservationList.Add(newReservation);
+
+                                MessageBox.Show("Reservation added successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                            }
+                            else
+                            {
+                                MessageBox.Show("An error ocurred");
+                            }
                         }
                         else
                         {
-                            MessageBox.Show("An error ocurred");
+                            MessageBox.Show("A room number must be chosen.");
                         }
                     }
                     catch (Exception ex)
@@ -264,7 +272,6 @@ namespace HotelReservation.ViewModels
                     ReservationView screen = new ReservationView();
                     screen.DataContext = reservationToUpdate;
                     screen.cbRooms.ItemsSource = roomList;
-                    screen.cbRooms.DisplayMemberPath = "RoomNumber";
                     screen.cbRooms.SelectedValue = reservationToUpdate.Room.RoomNumber.ToString();
                     bool? verifica = screen.ShowDialog();
 
@@ -272,20 +279,31 @@ namespace HotelReservation.ViewModels
                     {
                         try
                         {
-                            reservationValidator.Validate(reservationToUpdate);
-                            int res = database.UpdateReservation(reservationToUpdate);
-
-                            if (res == 1)
+                            string cbText = screen.cbRooms.Text;
+                            if (!string.IsNullOrEmpty(cbText))
                             {
-                                SelectedReservation.CopyReservation(reservationToUpdate);
-                                reservationList = database.GetReservations();
-                                Notifica(nameof(ReservationList));
+                                IRoom room = roomList.FirstOrDefault(r => r.RoomNumber.ToString() == cbText);
+                                reservationToUpdate.Room = room;
 
-                                MessageBox.Show("Reservation updated successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                                reservationValidator.Validate(reservationToUpdate);
+                                int res = database.UpdateReservation(reservationToUpdate);
+
+                                if (res == 1)
+                                {
+                                    SelectedReservation.CopyReservation(reservationToUpdate);
+                                    reservationList = database.GetReservations();
+                                    Notifica(nameof(ReservationList));
+
+                                    MessageBox.Show("Reservation updated successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                                }
+                                else
+                                {
+                                    MessageBox.Show("An error ocurred");
+                                }
                             }
                             else
                             {
-                                MessageBox.Show("An error ocurred");
+                                MessageBox.Show("A room number must be chosen.");
                             }
                         }
                         catch (Exception ex)
