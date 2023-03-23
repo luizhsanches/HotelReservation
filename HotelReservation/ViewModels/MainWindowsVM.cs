@@ -216,7 +216,7 @@ namespace HotelReservation.ViewModels
                 {
                     MessageBox.Show("A room should be selected in the listview.");
                 }
-            });
+            }, (object _) => RoomTypeItem != (int)RoomTypeEnum.All);
 
             AddReservation = new RelayCommand((object _) =>
             {
