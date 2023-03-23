@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace HotelReservationTests
 {
+    [TestFixture]
     public class RoomTests
     {
         private IRoom stdRoom;
