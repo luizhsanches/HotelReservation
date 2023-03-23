@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace HotelReservationTests
 {
+    [TestFixture]
     public class RoomValidatorTests
     {
         private RoomValidator roomValidator;
