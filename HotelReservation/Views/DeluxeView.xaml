@@ -5,8 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HotelReservation.Views"
         mc:Ignorable="d"
-        Title="DeluxeView" Height="450" Width="800">
+        Title="Deluxe Room" Height="300" Width="550">
     <Grid>
-        
+        <Label Content="Deluxe Room" HorizontalAlignment="Left" Margin="30,10,0,0" VerticalAlignment="Top" Width="162" FontSize="20"/>
+        <Label Content="Room Number" HorizontalAlignment="Left" Margin="30,70,0,0" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" Margin="30,96,0,0" TextWrapping="Wrap" LostFocus="TextBox_LostFocus" Text="{Binding RoomNumber, UpdateSourceTrigger=LostFocus}" PreviewTextInput="NumberValidationTextBox" VerticalAlignment="Top" Width="120"/>
+        <Label Content="Bed Quantity" HorizontalAlignment="Left" Margin="188,70,0,0" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" Margin="188,96,0,0" TextWrapping="Wrap" LostFocus="TextBox_LostFocus" Text="{Binding Beds, UpdateSourceTrigger=LostFocus}" PreviewTextInput="NumberValidationTextBox" VerticalAlignment="Top" Width="120"/>
+        <Label Content="Size (m²)" HorizontalAlignment="Left" Margin="340,70,0,0" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" Margin="340,96,0,0" TextWrapping="Wrap" LostFocus="TextBox_LostFocus" Text="{Binding Size, UpdateSourceTrigger=LostFocus}"  PreviewTextInput="NumberValidationTextBox" VerticalAlignment="Top" Width="120"/>
+        <CheckBox Content="Air Conditioning" IsChecked="{Binding AirConditioning}" HorizontalAlignment="Left" Margin="20,162,0,0" VerticalAlignment="Top"/>
+        <CheckBox Content="Television" IsChecked="{Binding Television}" HorizontalAlignment="Left" Margin="143,162,0,0" VerticalAlignment="Top"/>
+        <CheckBox Content="Mini Fridge" IsChecked="{Binding MiniFridge}" HorizontalAlignment="Left" Margin="243,162,0,0" VerticalAlignment="Top"/>
+        <CheckBox Content="Jacuzzi" IsChecked="{Binding Jacuzzi}" HorizontalAlignment="Left" Margin="345,162,0,0" VerticalAlignment="Top"/>
+        <CheckBox Content="Wifi" IsChecked="{Binding Wifi}" HorizontalAlignment="Left" Margin="419,162,0,0" VerticalAlignment="Top"/>
+        <Button Content="Submit" Click="BtnSubmitDlx" HorizontalAlignment="Center" Margin="0,215,0,0" VerticalAlignment="Top" Width="102" Height="28"/>
     </Grid>
 </Window>

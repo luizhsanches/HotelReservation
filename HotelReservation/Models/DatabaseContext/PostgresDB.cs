@@ -17,16 +17,9 @@ namespace HotelReservation.Models.DatabaseContext
     {
         private readonly string connectionString;
 
-        public PostgresDB(bool isTestDb = false)
+        public PostgresDB()
         {
-            if (isTestDb)
-            {
-                connectionString = "Server=localhost;Port=5432;Database=hotel_reservation_test;User Id=postgres;Password=1234;Integrated Security=true;";
-            }
-            else
-            {
-                connectionString = "Server=localhost;Port=5432;Database=hotel_reservation;User Id=postgres;Password=1234;Integrated Security=true;";
-            }
+            connectionString = "Server=localhost;Port=5432;Database=hotel_reservation;User Id=postgres;Password=1234;Integrated Security=true;";
         }
 
         public ObservableCollection<IRoom> GetRooms()

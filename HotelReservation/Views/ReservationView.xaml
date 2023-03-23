@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HotelReservation.Views"
         mc:Ignorable="d"
-        Title="ReservationView" Height="350" Width="500">
+        Title="Reservation" Height="350" Width="500">
     <Grid>
         <Label Content="Name" HorizontalAlignment="Left" Margin="40,31,0,0" VerticalAlignment="Top"/>
         <TextBox HorizontalAlignment="Left" Margin="40,57,0,0" TextWrapping="Wrap" Text="{Binding Username}" VerticalAlignment="Top" Width="372"/>

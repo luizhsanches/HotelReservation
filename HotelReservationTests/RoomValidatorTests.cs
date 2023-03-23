@@ -18,7 +18,7 @@ namespace HotelReservationTests
         }
 
         [Test]
-        public void Validate_ValidMovie_NoExceptionThrown()
+        public void ValidateValidRoom_NoExceptionThrown()
         {
             StandardRoom stdRoom = new StandardRoom
             {

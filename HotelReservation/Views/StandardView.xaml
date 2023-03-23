@@ -5,14 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HotelReservation.Views"
         mc:Ignorable="d"
-        Title="StandardView" Height="300" Width="550">
+        Title="Standard Room" Height="300" Width="550">
     <Grid>
         <Label Content="Standard Room" HorizontalAlignment="Left" Margin="30,10,0,0" VerticalAlignment="Top" Width="162" FontSize="20"/>
         <Label Content="Room Number" HorizontalAlignment="Left" Margin="30,70,0,0" VerticalAlignment="Top"/>
         <TextBox HorizontalAlignment="Left" Margin="30,96,0,0" TextWrapping="Wrap" LostFocus="TextBox_LostFocus" Text="{Binding RoomNumber, UpdateSourceTrigger=LostFocus}" PreviewTextInput="NumberValidationTextBox" VerticalAlignment="Top" Width="120"/>
-        <Label Content="Beds" HorizontalAlignment="Left" Margin="188,70,0,0" VerticalAlignment="Top"/>
+        <Label Content="Bed Quantity" HorizontalAlignment="Left" Margin="188,70,0,0" VerticalAlignment="Top"/>
         <TextBox HorizontalAlignment="Left" Margin="188,96,0,0" TextWrapping="Wrap" LostFocus="TextBox_LostFocus" Text="{Binding Beds, UpdateSourceTrigger=LostFocus}" PreviewTextInput="NumberValidationTextBox" VerticalAlignment="Top" Width="120"/>
-        <Label Content="Size" HorizontalAlignment="Left" Margin="340,70,0,0" VerticalAlignment="Top"/>
+        <Label Content="Size (m²)" HorizontalAlignment="Left" Margin="340,70,0,0" VerticalAlignment="Top"/>
         <TextBox HorizontalAlignment="Left" Margin="340,96,0,0" TextWrapping="Wrap" LostFocus="TextBox_LostFocus" Text="{Binding Size, UpdateSourceTrigger=LostFocus}"  PreviewTextInput="NumberValidationTextBox" VerticalAlignment="Top" Width="120"/>
         <CheckBox Content="Air Conditioning" IsChecked="{Binding AirConditioning}" HorizontalAlignment="Left" Margin="100,161,0,0" VerticalAlignment="Top"/>
         <CheckBox Content="Television" IsChecked="{Binding Television}" HorizontalAlignment="Left" Margin="223,161,0,0" VerticalAlignment="Top"/>

@@ -134,7 +134,7 @@ namespace HotelReservation.ViewModels
                         }
                         else
                         {
-                            throw new Exception("An error ocurred");
+                            MessageBox.Show("An error ocurred");
                         }
                     }
                     catch (Exception ex)

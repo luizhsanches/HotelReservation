@@ -25,7 +25,7 @@ namespace HotelReservationTests
         }
 
         [Test]
-        public void Validate_ValidMovie_NoExceptionThrown()
+        public void ValidateValidReservation_NoExceptionThrown()
         {
             Reservation reservation = new Reservation
             {
