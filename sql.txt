@@ -1,0 +1,27 @@
+create table
+  "public"."rooms" (
+    "id" serial primary key,
+    "room_number" INTEGER not null,
+    "room_type" varchar(255) not null,
+    "beds" INTEGER not null,
+    "size" INTEGER not null,
+    "air_conditioning" BOOLEAN not null,
+    "television" BOOLEAN not null,
+    "mini_fridge" BOOLEAN not null,
+    "jacuzzi" BOOLEAN not null,
+    "wifi" BOOLEAN not null
+  )
+
+create table
+  "public"."reservation" (
+    "id" serial primary key,
+    "room_id" INTEGER not null,
+    "username" varchar(255) not null,
+    "start_date" TIMESTAMP not null,
+    "end_date" TIMESTAMP not null
+  )
+
+ALTER TABLE
+  public.reservation
+ADD
+  CONSTRAINT "fk_room_id" FOREIGN KEY ("room_id") REFERENCES "rooms" ("id")
